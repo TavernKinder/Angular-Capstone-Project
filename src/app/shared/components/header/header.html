@@ -1,12 +1,9 @@
-<header>
-  <nav>
-    <span class="left">
-      <a href="/">Home</a>
-    </span>
-    <!-- User authentication links, switches to a link to the dashboard when logged in -->
-    <span class="right">
-      <a href="/login">Login</a>
-      <a href="/signup">Sign Up</a>
-    </span>
+<header class="site-header">
+  <nav class="site-nav" aria-label="Main navigation">
+    <a class="site-home" routerLink="/">Home</a>
+    <div class="site-links">
+      <a routerLink="/login">Log in</a>
+      <a class="site-signup" routerLink="/signup">Sign up</a>
+    </div>
   </nav>
 </header>

@@ -1,0 +1,106 @@
+.auth-page {
+  display: grid;
+  min-height: 70vh;
+  place-items: center;
+  padding: 3rem 1.25rem;
+}
+
+.auth-panel {
+  width: min(100%, 27rem);
+  padding: clamp(1.75rem, 5vw, 2.75rem);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  box-shadow: 0 1.25rem 3.5rem rgb(24 59 53 / 8%);
+}
+
+.eyebrow {
+  margin: 0 0 0.6rem;
+  color: var(--accent-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.auth-panel h1 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2.5rem;
+  font-weight: 500;
+}
+
+.auth-intro {
+  margin: 0.65rem 0 1.75rem;
+  color: var(--muted);
+}
+
+.auth-panel form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.auth-panel label {
+  margin-top: 0.55rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.auth-panel input {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  background: #fcfdfb;
+  color: var(--ink);
+}
+
+.auth-panel input[aria-invalid='true'] {
+  border-color: #b34337;
+}
+
+.field-error,
+.form-error,
+.form-message {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.field-error,
+.form-error {
+  color: #a33229;
+}
+
+.form-message {
+  color: var(--focus);
+}
+
+.auth-submit {
+  min-height: 3rem;
+  margin-top: 0.75rem;
+  border: 0;
+  border-radius: 0.3rem;
+  background: var(--ink);
+  color: white;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.auth-submit:hover {
+  background: #24594e;
+}
+
+.auth-switch {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--accent-dark);
+  font-weight: 650;
+  text-underline-offset: 0.2em;
+}

@@ -1,0 +1,25 @@
+.site-footer {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.footer-nav {
+  display: flex;
+  width: min(100% - 2.5rem, 72rem);
+  min-height: 4.25rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.footer-nav a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-nav a:hover {
+  color: var(--accent-dark);
+}
