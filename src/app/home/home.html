@@ -1,1 +1,58 @@
-<p>home works!</p>
+<main class="home-page">
+  <section class="home-intro" aria-labelledby="home-title">
+    <p class="eyebrow">Fitness Tracker</p>
+    <h1 id="home-title">Welcome to the Fitness Tracker</h1>
+  </section>
+
+  <section class="carousel" aria-label="Featured content carousel">
+    <div class="carousel-viewport" aria-live="polite">
+      @if (activeSlide; as slide) {
+        <article class="carousel-slide">
+          @if (slide.imageUrl) {
+            <img [src]="slide.imageUrl" [alt]="slide.imageAlt ?? ''" />
+          }
+          <div class="slide-copy">
+            <h2>{{ slide.title }}</h2>
+            <p>{{ slide.description }}</p>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="carousel-controls">
+      <button
+        type="button"
+        aria-label="Previous slide"
+        [disabled]="slides.length < 2"
+        (click)="showPrevious()"
+      >
+        &#8592;
+      </button>
+      <span aria-live="polite"
+        >{{ slides.length ? activeSlideIndex + 1 : 0 }} / {{ slides.length }}</span
+      >
+      <button
+        type="button"
+        aria-label="Next slide"
+        [disabled]="slides.length < 2"
+        (click)="showNext()"
+      >
+        &#8594;
+      </button>
+    </div>
+
+    @if (slides.length > 1) {
+      <div class="carousel-indicators" aria-label="Choose a slide">
+        @for (slide of slides; track slide.id; let index = $index) {
+          <button
+            type="button"
+            [class.active]="activeSlideIndex === index"
+            [attr.aria-label]="'Go to slide ' + (index + 1)"
+            [attr.aria-current]="activeSlideIndex === index ? 'true' : null"
+            (click)="showSlide(index)"
+          ></button>
+        }
+      </div>
+    }
+  </section>
+</main>

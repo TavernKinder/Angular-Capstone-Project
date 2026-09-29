@@ -1,0 +1,48 @@
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.site-nav {
+  display: flex;
+  width: min(100% - 2.5rem, 72rem);
+  min-height: 4.5rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+}
+
+.site-nav a {
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.site-home {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem !important;
+}
+
+.site-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.site-links .site-signup {
+  padding: 0.65rem 1rem;
+  border-radius: 0.3rem;
+  background: var(--ink);
+  color: white;
+}
+
+@media (max-width: 420px) {
+  .site-nav {
+    width: min(100% - 1.5rem, 72rem);
+  }
+
+  .site-links {
+    gap: 0.8rem;
+  }
+}

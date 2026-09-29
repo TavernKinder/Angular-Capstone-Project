@@ -1,1 +1,85 @@
-<p>signup works!</p>
+<main class="auth-page">
+  <section class="auth-panel" aria-labelledby="signup-title">
+    <p class="eyebrow">Fitness Tracker</p>
+    <h1 id="signup-title">Create an account</h1>
+    <p class="auth-intro">Get started with your fitness tracking.</p>
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        formControlName="email"
+        type="email"
+        autocomplete="email"
+        [attr.aria-invalid]="
+          (submitted || signupForm.controls.email.touched) && signupForm.controls.email.invalid
+        "
+      />
+      @if (
+        (submitted || signupForm.controls.email.touched) &&
+        signupForm.controls.email.hasError('required')
+      ) {
+        <p class="field-error">Email is required.</p>
+      } @else if (
+        (submitted || signupForm.controls.email.touched) &&
+        signupForm.controls.email.hasError('email')
+      ) {
+        <p class="field-error">Enter a valid email address.</p>
+      }
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        formControlName="password"
+        type="password"
+        autocomplete="new-password"
+        [attr.aria-invalid]="
+          (submitted || signupForm.controls.password.touched) &&
+          signupForm.controls.password.invalid
+        "
+      />
+      @if (
+        (submitted || signupForm.controls.password.touched) &&
+        signupForm.controls.password.hasError('required')
+      ) {
+        <p class="field-error">Password is required.</p>
+      } @else if (
+        (submitted || signupForm.controls.password.touched) &&
+        signupForm.controls.password.hasError('minlength')
+      ) {
+        <p class="field-error">Use at least 8 characters.</p>
+      }
+
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        id="confirmPassword"
+        formControlName="confirmPassword"
+        type="password"
+        autocomplete="new-password"
+        [attr.aria-invalid]="
+          (submitted || signupForm.controls.confirmPassword.touched) &&
+          (signupForm.controls.confirmPassword.invalid || signupForm.hasError('passwordMismatch'))
+        "
+      />
+      @if (
+        (submitted || signupForm.controls.confirmPassword.touched) &&
+        signupForm.controls.confirmPassword.hasError('required')
+      ) {
+        <p class="field-error">Please confirm your password.</p>
+      } @else if (
+        (submitted || signupForm.controls.confirmPassword.touched) &&
+        signupForm.hasError('passwordMismatch')
+      ) {
+        <p class="field-error">Passwords do not match.</p>
+      }
+
+      <button class="auth-submit" type="submit">Create account</button>
+      @if (signupError) {
+        <p class="form-error" role="alert">{{ signupError }}</p>
+      }
+      @if (signupMessage) {
+        <p class="form-message" role="status">{{ signupMessage }}</p>
+      }
+      <p class="auth-switch">Already have an account? <a routerLink="/login">Log in</a></p>
+    </form>
+  </section>
+</main>

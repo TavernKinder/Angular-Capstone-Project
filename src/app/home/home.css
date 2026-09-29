@@ -1,0 +1,132 @@
+.home-page {
+  width: min(100% - 2.5rem, 68rem);
+  min-height: 70vh;
+  margin: 0 auto;
+  padding: clamp(3rem, 8vw, 6.5rem) 0;
+}
+
+.home-intro {
+  max-width: 48rem;
+  margin: 0 auto 2.5rem;
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--accent-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.home-intro h1 {
+  margin: 0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.carousel {
+  max-width: 58rem;
+  margin: 0 auto;
+}
+
+.carousel-viewport {
+  display: grid;
+  min-height: 20rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #e3ece5, #f9faf7 60%, #f0e6dc);
+}
+
+.carousel-slide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.8fr);
+  align-items: center;
+  gap: 2rem;
+  padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.carousel-slide img {
+  width: 100%;
+  max-height: 18rem;
+  object-fit: cover;
+  border-radius: 0.375rem;
+}
+
+.slide-copy h2 {
+  margin: 0 0 0.75rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.slide-copy p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding-top: 1rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.carousel-controls button,
+.carousel-indicators button {
+  display: grid;
+  width: 2.75rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.carousel-controls button:disabled {
+  color: #a7b2ac;
+  cursor: not-allowed;
+}
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.carousel-indicators button {
+  width: 0.65rem;
+  padding: 0;
+  border: 0;
+  background: #bdc9c1;
+  cursor: pointer;
+}
+
+.carousel-indicators button.active {
+  background: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .home-page {
+    width: min(100% - 2rem, 68rem);
+  }
+
+  .carousel-viewport {
+    min-height: 15rem;
+  }
+
+  .carousel-slide {
+    grid-template-columns: 1fr;
+  }
+}

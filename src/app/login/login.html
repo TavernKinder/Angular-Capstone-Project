@@ -1,1 +1,56 @@
-<p>login works!</p>
+<main class="auth-page">
+  <section class="auth-panel" aria-labelledby="login-title">
+    <p class="eyebrow">Fitness Tracker</p>
+    <h1 id="login-title">Log in</h1>
+    <p class="auth-intro">Access your account.</p>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        formControlName="email"
+        type="email"
+        autocomplete="email"
+        [attr.aria-invalid]="
+          (submitted || loginForm.controls.email.touched) && loginForm.controls.email.invalid
+        "
+      />
+      @if (
+        (submitted || loginForm.controls.email.touched) &&
+        loginForm.controls.email.hasError('required')
+      ) {
+        <p class="field-error">Email is required.</p>
+      } @else if (
+        (submitted || loginForm.controls.email.touched) &&
+        loginForm.controls.email.hasError('email')
+      ) {
+        <p class="field-error">Enter a valid email address.</p>
+      }
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        formControlName="password"
+        type="password"
+        autocomplete="current-password"
+        [attr.aria-invalid]="
+          (submitted || loginForm.controls.password.touched) && loginForm.controls.password.invalid
+        "
+      />
+      @if (
+        (submitted || loginForm.controls.password.touched) &&
+        loginForm.controls.password.hasError('required')
+      ) {
+        <p class="field-error">Password is required.</p>
+      }
+
+      <button class="auth-submit" type="submit">Log in</button>
+      @if (loginError) {
+        <p class="form-error" role="alert">{{ loginError }}</p>
+      }
+      @if (loginMessage) {
+        <p class="form-message" role="status">{{ loginMessage }}</p>
+      }
+      <p class="auth-switch">Don't have an account? <a routerLink="/signup">Sign up</a></p>
+    </form>
+  </section>
+</main>
