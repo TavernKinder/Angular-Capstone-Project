@@ -19,4 +19,18 @@ describe('Home', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('cycles through slides and ignores navigation when there are none', () => {
+    component.showNext();
+    expect(component.activeSlideIndex).toBe(0);
+
+    component.slides.push(
+      { id: 'first', title: 'First', description: 'First slide' },
+      { id: 'second', title: 'Second', description: 'Second slide' },
+    );
+    component.showPrevious();
+    expect(component.activeSlideIndex).toBe(1);
+    component.showNext();
+    expect(component.activeSlideIndex).toBe(0);
+  });
 });
