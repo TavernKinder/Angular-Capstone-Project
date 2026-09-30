@@ -43,14 +43,22 @@
         <p class="field-error">Password is required.</p>
       }
 
-      <button class="auth-submit" type="submit">Log in</button>
+      <button class="auth-submit" type="submit" [disabled]="authInProgress">Log in</button>
       @if (loginError) {
         <p class="form-error" role="alert">{{ loginError }}</p>
       }
       @if (loginMessage) {
         <p class="form-message" role="status">{{ loginMessage }}</p>
       }
-      <p class="auth-switch">Don't have an account? <a routerLink="/signup">Sign up</a></p>
     </form>
+    <button
+      class="auth-google"
+      type="button"
+      [disabled]="authInProgress"
+      (click)="onGoogleSignIn()"
+    >
+      Sign in with Google
+    </button>
+    <p class="auth-switch">Don't have an account? <a routerLink="/signup">Sign up</a></p>
   </section>
 </main>
