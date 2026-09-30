@@ -7,7 +7,8 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../shared/services/auth/auth';
 
 const passwordsMatchValidator: ValidatorFn = (
   control: AbstractControl,
@@ -27,6 +28,9 @@ const passwordsMatchValidator: ValidatorFn = (
 })
 export class Signup {
   private readonly formBuilder = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
   readonly signupForm = this.formBuilder.group(
     {
       email: ['', [Validators.required, Validators.email]],
@@ -37,10 +41,11 @@ export class Signup {
   );
 
   submitted = false;
+  authInProgress = false;
   signupError: string | null = null;
   signupMessage: string | null = null;
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     this.submitted = true;
     this.signupError = null;
     this.signupMessage = null;
@@ -73,9 +78,20 @@ export class Signup {
         this.signupForm.markAllAsTouched();
         break;
       default:
-        this.signupMessage =
-          'Your details are valid. An authentication service is needed to create an account.';
+        await this.createAccount(email.value!, password.value!);
         break;
+    }
+  }
+
+  private async createAccount(email: string, password: string): Promise<void> {
+    this.authInProgress = true;
+    try {
+      await this.authService.signup(email, password);
+      await this.router.navigateByUrl('/dashboard');
+    } catch {
+      this.signupError = this.authService.error() ?? 'Unable to create account.';
+    } finally {
+      this.authInProgress = false;
     }
   }
 }
