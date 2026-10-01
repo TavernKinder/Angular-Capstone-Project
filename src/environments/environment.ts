@@ -8,4 +8,5 @@ export const environment = {
     messagingSenderId: '713502851215',
     appId: '1:713502851215:web:7975299f629e375f2930fa',
   },
+  usdaApiKey: 'MPwW599gtbBVDHrGuf9aIQIXKcjUHWgkXIHftCLm',
 };

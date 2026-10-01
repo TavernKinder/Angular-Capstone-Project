@@ -1,1 +1,129 @@
-<p>nutrition works!</p>
+<div class="mx-auto w-[min(100%-2.5rem,72rem)] min-h-[calc(100vh-200px)] py-12">
+  <!-- Header Section -->
+  <div class="mb-10 text-center">
+    <h1 class="text-3xl font-bold mb-3 text-[var(--ink)]" style="font-family: Georgia, 'Times New Roman', serif;">Nutrition Log</h1>
+    <p class="text-[var(--muted)] max-w-2xl mx-auto text-sm md:text-base">
+      Search the USDA database to track your macros and hit your daily targets.
+    </p>
+  </div>
+
+  <!-- Search Bar Container -->
+  <div class="max-w-2xl mx-auto mb-12">
+    <!-- Removed generic Tailwind outlines, using focus-within to trigger the custom outline defined in styles.css for inputs -->
+    <div class="flex items-center bg-[var(--surface)] border border-[var(--line)] rounded-sm overflow-hidden focus-within:outline-[3px] focus-within:outline-[var(--focus)] focus-within:outline-offset-3">
+      <div class="pl-4 text-[var(--muted)]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input 
+        type="text" 
+        class="block w-full py-3.5 pl-3 pr-12 text-base md:text-lg text-[var(--ink)] bg-transparent outline-none placeholder:text-[var(--muted)]/60" 
+        placeholder="Search foods (e.g. Greek Yogurt, Banana)..."
+        (input)="onSearchChange($event)"
+      >
+      <!-- Mini spinner in search bar -->
+      @if (isLoading()) {
+        <div class="pr-4">
+          <div class="animate-spin h-5 w-5 border-b-2 border-[var(--ink)] rounded-full"></div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div>
+    <!-- Error State -->
+    @if (error()) {
+      <div class="bg-red-50 text-red-700 p-6 border border-red-200 mb-8 flex items-center rounded-sm max-w-2xl mx-auto animate-fade-in">
+        <p class="font-medium text-base">{{ error() }}</p>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (hasSearched() && !isLoading() && foods().length === 0 && !error()) {
+      <div class="text-center p-12 bg-[var(--surface)] border border-[var(--line)] rounded-sm max-w-2xl mx-auto animate-fade-in">
+        <h3 class="text-lg font-bold text-[var(--ink)] mb-2">No foods found</h3>
+        <p class="text-[var(--muted)]">Try adjusting your search terms or checking for typos.</p>
+      </div>
+    }
+
+    <!-- Skeleton Loading -->
+    @if (isLoading() && foods().length === 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div class="bg-[var(--surface)] p-6 border border-[var(--line)] rounded-sm animate-pulse flex flex-col justify-between h-44">
+            <div>
+              <div class="h-5 bg-[var(--line)] rounded-sm w-3/4 mb-3"></div>
+              <div class="h-3 bg-[var(--line)] rounded-sm w-1/2 mb-6"></div>
+            </div>
+            <div class="flex justify-between border-t border-[var(--line)] pt-4 mt-auto">
+              <div class="h-5 bg-[var(--line)] rounded-sm w-12"></div>
+              <div class="h-5 bg-[var(--line)] rounded-sm w-12"></div>
+              <div class="h-5 bg-[var(--line)] rounded-sm w-12"></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Results Grid -->
+    @if (!isLoading() && foods().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+        @for (food of foods(); track food.fdcId) {
+          <div 
+            class="group bg-[var(--surface)] p-6 border border-[var(--line)] rounded-sm hover:border-[var(--ink)] hover:shadow-sm transition-all duration-200 flex flex-col justify-between cursor-pointer relative"
+            (click)="onFoodClick(food)"
+          >
+            <div class="mb-5">
+              <h3 class="text-lg font-bold text-[var(--ink)] leading-snug mb-1 group-hover:text-[var(--accent)] transition-colors">
+                {{ food.description | titlecase }}
+              </h3>
+              @if (food.brandOwner) {
+                <p class="text-xs text-[var(--muted)] font-medium tracking-wide uppercase">{{ food.brandOwner }}</p>
+              }
+            </div>
+
+            <div class="border-t border-[var(--line)] pt-4 mt-auto">
+              <p class="text-[10px] text-[var(--muted)] mb-3 font-bold uppercase tracking-widest">Macros / 100g</p>
+              <div class="flex gap-6">
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-[var(--muted)] uppercase font-semibold mb-0.5">Protein</span>
+                  <span class="text-[var(--ink)] font-bold text-sm">{{ getMacro(food, 1003) | number:'1.0-1' }}g</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-[var(--muted)] uppercase font-semibold mb-0.5">Carbs</span>
+                  <span class="text-[var(--ink)] font-bold text-sm">{{ getMacro(food, 1005) | number:'1.0-1' }}g</span>
+                </div>
+                <div class="flex flex-col">
+                  <span class="text-[10px] text-[var(--muted)] uppercase font-semibold mb-0.5">Fat</span>
+                  <span class="text-[var(--ink)] font-bold text-sm">{{ getMacro(food, 1004) | number:'1.0-1' }}g</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Success Overlay when clicked -->
+            @if (recentlyLogged() === food.fdcId) {
+              <div class="absolute inset-0 bg-[var(--surface)]/95 backdrop-blur-sm z-20 flex flex-col items-center justify-center animate-fade-in text-[var(--ink)] border border-[var(--focus)] rounded-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mb-2 text-[var(--focus)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span class="font-bold text-sm uppercase tracking-widest">Logged</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

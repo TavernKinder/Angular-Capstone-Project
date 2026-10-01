@@ -40,7 +40,7 @@ export class AuthService {
   readonly error = signal<string | null>(null);
 
   constructor() {
-    authState(this.auth).subscribe((user) => this.currentUser.set(user));
+    authState(this.auth).subscribe((user: User | null) => this.currentUser.set(user));
   }
 
   async login(email: string, password: string): Promise<void> {
