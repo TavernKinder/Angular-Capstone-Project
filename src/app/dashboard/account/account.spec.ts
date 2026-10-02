@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AuthService } from '../../shared/services/auth/auth';
+import { FirestoreWriteService } from '../../shared/services/firestore/firestore-write';
 
 import { Account } from './account';
 
@@ -9,6 +11,10 @@ describe('Account', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Account],
+      providers: [
+        { provide: AuthService, useValue: { currentUser: () => null } },
+        { provide: FirestoreWriteService, useValue: { getUserProfile: vi.fn() } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Account);

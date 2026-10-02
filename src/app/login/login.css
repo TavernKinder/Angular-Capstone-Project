@@ -92,6 +92,41 @@
   background: #24594e;
 }
 
+.auth-google {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #747775;
+  border-radius: 0.3rem;
+  background: #fff;
+  color: #1f1f1f;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-google:hover {
+  background: #f8f9fa;
+}
+
+.auth-google:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.google-mark {
+  position: absolute;
+  left: 0.75rem;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
 .auth-switch {
   margin: 0.9rem 0 0;
   color: var(--muted);

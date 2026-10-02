@@ -83,6 +83,19 @@ export class Signup {
     }
   }
 
+  async onGoogleSignUp(): Promise<void> {
+    this.signupError = null;
+    this.authInProgress = true;
+    try {
+      await this.authService.loginWithGoogle();
+      await this.router.navigateByUrl('/dashboard');
+    } catch {
+      this.signupError = this.authService.error() ?? 'Unable to sign up with Google.';
+    } finally {
+      this.authInProgress = false;
+    }
+  }
+
   private async createAccount(email: string, password: string): Promise<void> {
     this.authInProgress = true;
     try {

@@ -9,6 +9,7 @@ import {
   signOut,
   User,
 } from '@angular/fire/auth';
+import { FirestoreWriteService } from '../firestore/firestore-write';
 
 function mapAuthError(err: unknown): string {
   const code = (err as { code?: string })?.code;
@@ -33,6 +34,7 @@ function mapAuthError(err: unknown): string {
 })
 export class AuthService {
   private readonly auth = inject(Auth);
+  private readonly firestoreWriteService = inject(FirestoreWriteService);
 
   // Reflects the current Firebase auth state as a signal for template use
   readonly currentUser = signal<User | null>(null);
@@ -60,7 +62,8 @@ export class AuthService {
     this.isLoading.set(true);
     this.error.set(null);
     try {
-      await createUserWithEmailAndPassword(this.auth, email, password);
+      const credential = await createUserWithEmailAndPassword(this.auth, email, password);
+      await this.firestoreWriteService.createUserProfile(credential.user);
     } catch (err) {
       this.error.set(mapAuthError(err));
       throw err;
@@ -73,7 +76,8 @@ export class AuthService {
     this.isLoading.set(true);
     this.error.set(null);
     try {
-      await signInWithPopup(this.auth, new GoogleAuthProvider());
+      const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
+      await this.firestoreWriteService.createUserProfile(credential.user);
     } catch (err) {
       this.error.set(mapAuthError(err));
       throw err;
