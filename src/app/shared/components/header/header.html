@@ -2,8 +2,13 @@
   <nav class="site-nav" aria-label="Main navigation">
     <a class="site-home" routerLink="/">Home</a>
     <div class="site-links">
-      <a routerLink="/login">Log in</a>
-      <a class="site-signup" routerLink="/signup">Sign up</a>
+      @if (authService.currentUser()) {
+        <a class="site-signup" routerLink="/dashboard">Dashboard</a>
+        <a routerLink="/dashboard/account">Account details</a>
+      } @else {
+        <a routerLink="/login">Log in</a>
+        <a class="site-signup" routerLink="/signup">Sign up</a>
+      }
     </div>
   </nav>
 </header>

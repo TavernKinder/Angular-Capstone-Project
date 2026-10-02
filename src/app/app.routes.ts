@@ -10,7 +10,7 @@ import { Forcast } from './dashboard/forcast/forcast';
 import { Nutrition } from './dashboard/nutrition/nutrition';
 import { Workout } from './dashboard/workout/workout';
 import { Account } from './dashboard/account/account';
-// import { authGuard } from './shared/guards/auth-guard'; // TODO: implement once login logic exists
+import { authGuard } from './shared/guards/auth-guard';
 
 export const routes: Routes = [
   {
@@ -26,7 +26,7 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardLayout,
-    // canActivate: [authGuard], // TODO: protect dashboard routes once login logic exists
+    canActivate: [authGuard],
     children: [
       { path: '', component: DashboardHome },
       { path: 'forcast', component: Forcast },
