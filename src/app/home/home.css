@@ -1,6 +1,5 @@
 .home-page {
   width: min(100% - 2.5rem, 68rem);
-  min-height: 70vh;
   margin: 0 auto;
   padding: clamp(3rem, 8vw, 6.5rem) 0;
 }

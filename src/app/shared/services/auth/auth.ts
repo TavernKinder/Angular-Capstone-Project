@@ -3,10 +3,13 @@ import {
   Auth,
   authState,
   createUserWithEmailAndPassword,
+  EmailAuthProvider,
   GoogleAuthProvider,
+  reauthenticateWithCredential,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
+  updatePassword,
   User,
 } from '@angular/fire/auth';
 import { FirestoreWriteService } from '../firestore/firestore-write';
@@ -24,6 +27,10 @@ function mapAuthError(err: unknown): string {
       return 'Use a stronger password.';
     case 'auth/invalid-email':
       return 'Enter a valid email address.';
+    case 'auth/requires-recent-login':
+      return 'Please log in again before making this change.';
+    case 'auth/too-many-requests':
+      return 'Too many attempts. Please try again later.';
     default:
       return 'Something went wrong. Please try again.';
   }
@@ -88,5 +95,27 @@ export class AuthService {
 
   async logout(): Promise<void> {
     await signOut(this.auth);
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    this.isLoading.set(true);
+    this.error.set(null);
+    try {
+      const user = this.auth.currentUser;
+      if (!user?.email) throw new Error('A signed-in user with an email is required.');
+
+      await reauthenticateWithCredential(
+        user,
+        EmailAuthProvider.credential(user.email, currentPassword),
+      );
+      await updatePassword(user, newPassword);
+    } catch (err) {
+      const code = (err as { code?: string })?.code;
+      const isWrongPassword = code === 'auth/wrong-password' || code === 'auth/invalid-credential';
+      this.error.set(isWrongPassword ? 'Current password is incorrect.' : mapAuthError(err));
+      throw err;
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 }

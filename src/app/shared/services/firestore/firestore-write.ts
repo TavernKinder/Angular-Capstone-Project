@@ -1,13 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, User } from '@angular/fire/auth';
-import { doc, Firestore, getDoc, serverTimestamp, setDoc } from '@angular/fire/firestore';
+import { doc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
 
 export type ThemePreference = 'light' | 'dark';
 
+export interface UserPreferences {
+  theme?: ThemePreference;
+  // Not implemented yet: reminders and defaultLocation are display-only for now.
+  reminders?: string;
+  defaultLocation?: string;
+}
+
+// The document ID is the user's uid; it is not stored as a field.
 export interface UserProfile {
-  uid: string;
-  email: string | null;
-  preferences?: { theme?: ThemePreference };
+  userName?: string;
+  preferences?: UserPreferences;
 }
 
 @Injectable({
@@ -25,9 +32,8 @@ export class FirestoreWriteService {
     if (existingProfile.exists()) return;
 
     await setDoc(profileRef, {
-      uid: user.uid,
-      email: user.email,
-      createdAt: serverTimestamp(),
+      userName: user.displayName ?? user.email?.split('@')[0] ?? '',
+      preferences: { theme: 'light' },
     });
   }
 
@@ -41,12 +47,17 @@ export class FirestoreWriteService {
   async updateTheme(user: User, theme: ThemePreference): Promise<void> {
     this.assertSignedIn(user);
 
-    // uid is included so the merge also satisfies the create/update rules.
     await setDoc(
       doc(this.firestore, 'userInfo', user.uid),
-      { uid: user.uid, preferences: { theme } },
+      { preferences: { theme } },
       { merge: true },
     );
+  }
+
+  async updateUserName(user: User, userName: string): Promise<void> {
+    this.assertSignedIn(user);
+
+    await setDoc(doc(this.firestore, 'userInfo', user.uid), { userName }, { merge: true });
   }
 
   private assertSignedIn(user: User): void {

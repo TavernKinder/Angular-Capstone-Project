@@ -22,11 +22,11 @@ export interface WeatherData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class Weather {
   private readonly http = inject(HttpClient);
-  
+
   // Signals for state management
   readonly weatherData = signal<WeatherData | null>(null);
   readonly locationName = signal<string>('Detecting Location...');
@@ -64,7 +64,7 @@ export class Weather {
 
   async fetchWeather(latitude: number, longitude: number): Promise<void> {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto`;
-    
+
     try {
       const data = await firstValueFrom(this.http.get<WeatherData>(url));
       this.weatherData.set(data);
@@ -82,7 +82,7 @@ export class Weather {
       const geoData: any = await firstValueFrom(this.http.get(geoUrl));
       const city = geoData.city || geoData.locality || 'Unknown City';
       const state = geoData.principalSubdivision || '';
-      
+
       if (state) {
         this.locationName.set(`${city}, ${state}`);
       } else {

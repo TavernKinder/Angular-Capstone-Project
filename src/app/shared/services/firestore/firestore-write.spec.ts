@@ -6,10 +6,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FirestoreWriteService } from './firestore-write';
 
-const { docMock, getDocMock, serverTimestampMock, setDocMock } = vi.hoisted(() => ({
+const { docMock, getDocMock, setDocMock } = vi.hoisted(() => ({
   docMock: vi.fn(() => 'user-profile-ref'),
   getDocMock: vi.fn().mockResolvedValue({ exists: () => false }),
-  serverTimestampMock: vi.fn(() => 'server-timestamp'),
   setDocMock: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -18,7 +17,6 @@ vi.mock('@angular/fire/firestore', () => {
     Firestore: class {},
     doc: docMock,
     getDoc: getDocMock,
-    serverTimestamp: serverTimestampMock,
     setDoc: setDocMock,
   };
 });
@@ -46,9 +44,8 @@ describe('FirestoreWriteService', () => {
     expect(docMock).toHaveBeenCalledWith(firestore, 'userInfo', 'user-123');
     expect(getDocMock).toHaveBeenCalledWith('user-profile-ref');
     expect(setDocMock).toHaveBeenCalledWith('user-profile-ref', {
-      uid: 'user-123',
-      email: 'person@example.com',
-      createdAt: 'server-timestamp',
+      userName: 'person',
+      preferences: { theme: 'light' },
     });
   });
 
@@ -64,6 +61,33 @@ describe('FirestoreWriteService', () => {
 
     await service.createUserProfile(user);
 
+    expect(setDocMock).not.toHaveBeenCalled();
+  });
+
+  it('merges the userName field into the profile', async () => {
+    await service.updateUserName(user, 'NewName');
+
+    expect(setDocMock).toHaveBeenCalledWith(
+      'user-profile-ref',
+      { userName: 'NewName' },
+      { merge: true },
+    );
+  });
+
+  it('merges the theme into the preferences map', async () => {
+    await service.updateTheme(user, 'dark');
+
+    expect(setDocMock).toHaveBeenCalledWith(
+      'user-profile-ref',
+      { preferences: { theme: 'dark' } },
+      { merge: true },
+    );
+  });
+
+  it('rejects username updates for another user', async () => {
+    await expect(
+      service.updateUserName({ ...user, uid: 'other-user' } as User, 'x'),
+    ).rejects.toThrow('A matching signed-in user is required');
     expect(setDocMock).not.toHaveBeenCalled();
   });
 });
