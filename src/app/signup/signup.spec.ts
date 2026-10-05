@@ -7,12 +7,17 @@ import { AuthService } from '../shared/services/auth/auth';
 describe('Signup', () => {
   let component: Signup;
   let fixture: ComponentFixture<Signup>;
-  let authService: { signup: ReturnType<typeof vi.fn>; error: ReturnType<typeof vi.fn> };
+  let authService: {
+    signup: ReturnType<typeof vi.fn>;
+    loginWithGoogle: ReturnType<typeof vi.fn>;
+    error: ReturnType<typeof vi.fn>;
+  };
   let router: Router;
 
   beforeEach(async () => {
     authService = {
       signup: vi.fn().mockResolvedValue(undefined),
+      loginWithGoogle: vi.fn().mockResolvedValue(undefined),
       error: vi.fn().mockReturnValue(null),
     };
 
@@ -65,5 +70,13 @@ describe('Signup', () => {
     await component.onSubmit();
     expect(component.signupError).toBe('An account with this email already exists.');
     expect(router.navigateByUrl).not.toHaveBeenCalled();
+  });
+
+  it('signs up with Google and navigates to the dashboard', async () => {
+    await component.onGoogleSignUp();
+
+    expect(authService.loginWithGoogle).toHaveBeenCalled();
+    expect(component.signupError).toBeNull();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/dashboard');
   });
 });

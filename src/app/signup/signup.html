@@ -81,5 +81,31 @@
       }
       <p class="auth-switch">Already have an account? <a routerLink="/login">Log in</a></p>
     </form>
+    <button
+      class="auth-google"
+      type="button"
+      [disabled]="authInProgress"
+      (click)="onGoogleSignUp()"
+    >
+      <svg class="google-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <path
+          fill="#4285F4"
+          d="M43.611 20.083H42V20H24v8h11.303c-.527 2.984-2.11 5.494-4.57 7.177l7.73 5.998C42.97 37.13 46 31.09 46 24c0-1.341-.138-2.65-.389-3.917Z"
+        />
+        <path
+          fill="#34A853"
+          d="M24 46c6.48 0 11.92-2.14 15.89-5.81l-7.73-5.998C30.02 35.81 27.3 36.8 24 36.8c-6.21 0-11.48-4.19-13.36-9.83l-7.99 6.16C6.58 40.93 14.53 46 24 46Z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M10.64 26.97A13.99 13.99 0 0 1 9.9 23c0-1.38.25-2.72.7-3.97l-7.99-6.16A22.93 22.93 0 0 0 0 23c0 3.66.88 7.12 2.61 10.19l8.03-6.22Z"
+        />
+        <path
+          fill="#EA4335"
+          d="M24 9.2c3.54 0 6.72 1.22 9.22 3.61l6.9-6.9C35.92 2.21 30.48 0 24 0 14.53 0 6.58 5.07 2.61 12.87l7.99 6.16C12.52 13.39 17.79 9.2 24 9.2Z"
+        />
+      </svg>
+      Sign up with Google
+    </button>
   </section>
 </main>
