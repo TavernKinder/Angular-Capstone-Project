@@ -1,61 +1,131 @@
-<section>
-  <h1>Your account</h1>
-  <div class="account-details">
-    <h2>Account Details</h2>
-    @if (accountError()) {
-      <p role="alert">{{ accountError() }}</p>
-    }
-    @if (accountMessage()) {
-      <p role="status">{{ accountMessage() }}</p>
-    }
-    <p>Email: {{ authService.currentUser()?.email }}</p>
-    <p>UserName: {{ userName() }}</p>
-    <div>
-      <button type="button" (click)="toggleChangeUsernameFields()">Change Username</button>
-      @if (showChangeUsernameFields()) {
-        <input type="text" placeholder="New Username" [formControl]="userNameControl" />
-        <button type="button" [disabled]="isSavingUserName()" (click)="saveUserName()">
-          {{ isSavingUserName() ? 'Saving...' : 'Save New Username' }}
+<main class="account-page">
+  <header class="account-heading">
+    <p class="account-eyebrow">Your profile</p>
+    <h1>Your account</h1>
+    <p>Manage your account details and personal preferences.</p>
+  </header>
+
+  @if (accountError()) {
+    <p class="account-error" role="alert">{{ accountError() }}</p>
+  }
+  @if (accountMessage()) {
+    <p class="account-message" role="status">{{ accountMessage() }}</p>
+  }
+
+  <div class="account-grid">
+    <section class="account-card" aria-labelledby="account-details-title">
+      <div class="card-heading">
+        <p class="account-eyebrow">Profile</p>
+        <h2 id="account-details-title">Account details</h2>
+      </div>
+
+      <dl class="account-summary">
+        <div>
+          <dt>Email</dt>
+          <dd>{{ authService.currentUser()?.email || 'Not available' }}</dd>
+        </div>
+        <div>
+          <dt>Username</dt>
+          <dd>{{ userName() || 'Not set' }}</dd>
+        </div>
+      </dl>
+
+      <div class="account-actions">
+        <button
+          class="account-button account-button-secondary"
+          type="button"
+          (click)="toggleChangeUsernameFields()"
+        >
+          {{ showChangeUsernameFields() ? 'Cancel username change' : 'Change Username' }}
         </button>
-      }
-    </div>
-    @if (hasPasswordLogin()) {
-      <div>
-        <button type="button" (click)="toggleChangePasswordFields()">Change Password</button>
-        @if (showChangePasswordFields()) {
-          <form [formGroup]="passwordForm" (ngSubmit)="savePassword()">
+        @if (showChangeUsernameFields()) {
+          <div class="account-form">
+            <label for="new-username">New username</label>
             <input
-              type="password"
-              placeholder="Current Password"
-              autocomplete="current-password"
-              formControlName="currentPassword"
+              id="new-username"
+              type="text"
+              autocomplete="nickname"
+              [formControl]="userNameControl"
             />
-            <input
-              type="password"
-              placeholder="New Password"
-              autocomplete="new-password"
-              formControlName="newPassword"
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              autocomplete="new-password"
-              formControlName="confirmPassword"
-            />
-            <button type="submit" [disabled]="isSavingPassword()">
-              {{ isSavingPassword() ? 'Saving...' : 'Save New Password' }}
+            <button
+              class="account-button"
+              type="button"
+              [disabled]="isSavingUserName()"
+              (click)="saveUserName()"
+            >
+              {{ isSavingUserName() ? 'Saving...' : 'Save username' }}
             </button>
-          </form>
+          </div>
         }
       </div>
-    }
+
+      @if (hasPasswordLogin()) {
+        <div class="account-actions">
+          <button
+            class="account-button account-button-secondary"
+            type="button"
+            (click)="toggleChangePasswordFields()"
+          >
+            {{ showChangePasswordFields() ? 'Cancel password change' : 'Change Password' }}
+          </button>
+          @if (showChangePasswordFields()) {
+            <form class="account-form" [formGroup]="passwordForm" (ngSubmit)="savePassword()">
+              <label for="current-password">Current password</label>
+              <input
+                id="current-password"
+                type="password"
+                autocomplete="current-password"
+                formControlName="currentPassword"
+              />
+              <label for="new-password">New password</label>
+              <input
+                id="new-password"
+                type="password"
+                autocomplete="new-password"
+                formControlName="newPassword"
+              />
+              <label for="confirm-password">Confirm new password</label>
+              <input
+                id="confirm-password"
+                type="password"
+                autocomplete="new-password"
+                formControlName="confirmPassword"
+              />
+              <button class="account-button" type="submit" [disabled]="isSavingPassword()">
+                {{ isSavingPassword() ? 'Saving...' : 'Save password' }}
+              </button>
+            </form>
+          }
+        </div>
+      }
+      @if (authService.currentUser()) {
+        <div>
+          <button class="account-button account-button-secondary" type="button" (click)="logout()">
+            Logout
+          </button>
+        </div>
+      }
+    </section>
+
+    <section class="account-card preferences-card" aria-labelledby="preferences-title">
+      <div class="card-heading">
+        <p class="account-eyebrow">Personalize</p>
+        <h2 id="preferences-title">Preferences</h2>
+      </div>
+      <div class="preference-row">
+        <div>
+          <h3>Appearance</h3>
+          <p>Current theme: {{ themeService.theme() === 'dark' ? 'Dark' : 'Light' }}</p>
+        </div>
+        <button
+          class="account-button account-button-secondary"
+          type="button"
+          [disabled]="isSavingTheme()"
+          (click)="changeTheme()"
+        >
+          {{ isSavingTheme() ? 'Saving...' : 'Change theme' }}
+        </button>
+      </div>
+    </section>
   </div>
-  <section class="Prefrences">
-    <h2>Preferences</h2>
-    <h3>Theme</h3>
-    <p>Current Theme: {{ themeService.theme() === 'dark' ? 'Dark' : 'Light' }}</p>
-    <button type="button" [disabled]="isSavingTheme()" (click)="changeTheme()">
-      {{ isSavingTheme() ? 'Saving...' : 'Change Theme (Theme styles not implemented yet)' }}
-    </button>
-  </section>
-</section>
+</main>

@@ -2,5 +2,8 @@
   <nav class="footer-nav" aria-label="Footer navigation">
     <span>Fitness Tracker</span>
     <a routerLink="/about">About</a>
+    @if (authService.currentUser()) {
+      <button type="button" class="footer-logout" (click)="logout()">Logout</button>
+    }
   </nav>
 </footer>

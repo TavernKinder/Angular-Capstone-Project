@@ -8,10 +8,15 @@
   width: min(100% - 2.5rem, 72rem);
   min-height: 4.25rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 1.25rem;
   margin: 0 auto;
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+.footer-nav span {
+  margin-right: auto;
 }
 
 .footer-nav a {
@@ -20,6 +25,20 @@
   text-decoration: none;
 }
 
+.footer-logout {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .footer-nav a:hover {
+  color: var(--accent-dark);
+}
+
+.footer-logout:hover {
   color: var(--accent-dark);
 }
