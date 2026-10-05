@@ -28,6 +28,11 @@ body {
   font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
 }
 
+/* Fills the viewport between the header (4.5rem) and footer (4.25rem). */
+main {
+  min-height: calc(100dvh - 4.5rem - 4.25rem);
+}
+
 button,
 input {
   font: inherit;
