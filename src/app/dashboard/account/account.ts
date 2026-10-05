@@ -1,5 +1,6 @@
-﻿import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth/auth';
 import {
   FirestoreWriteService,
@@ -21,6 +22,7 @@ const PASSWORD_MIN_LENGTH = 8;
 export class Account {
   readonly authService = inject(AuthService);
   readonly themeService = inject(ThemeService);
+  private readonly router = inject(Router);
   private readonly firestoreWriteService = inject(FirestoreWriteService);
 
   readonly profile = signal<UserProfile | null>(null);
@@ -77,7 +79,7 @@ export class Account {
     const userName = this.userNameControl.value.trim();
     this.clearMessages();
     if (userName.length < USER_NAME_MIN_LENGTH || userName.length > USER_NAME_MAX_LENGTH) {
-      this.accountError.set(
+      this.setAccountError(
         `Username must be ${USER_NAME_MIN_LENGTH}-${USER_NAME_MAX_LENGTH} characters.`,
       );
       return;
@@ -94,7 +96,7 @@ export class Account {
       this.accountMessage.set('Username updated.');
     } catch (err) {
       console.error('Failed to save username:', err);
-      this.accountError.set('Unable to save your username. Please try again.');
+      this.setAccountError('Unable to save your username. Please try again.');
     } finally {
       this.isSavingUserName.set(false);
     }
@@ -106,15 +108,15 @@ export class Account {
     const { currentPassword, newPassword, confirmPassword } = this.passwordForm.getRawValue();
     this.clearMessages();
     if (!currentPassword || !newPassword || !confirmPassword) {
-      this.accountError.set('Fill in all password fields.');
+      this.setAccountError('Fill in all password fields.');
       return;
     }
     if (newPassword.length < PASSWORD_MIN_LENGTH) {
-      this.accountError.set(`Use a password with at least ${PASSWORD_MIN_LENGTH} characters.`);
+      this.setAccountError(`Use a password with at least ${PASSWORD_MIN_LENGTH} characters.`);
       return;
     }
     if (newPassword !== confirmPassword) {
-      this.accountError.set('New passwords do not match.');
+      this.setAccountError('New passwords do not match.');
       return;
     }
 
@@ -125,7 +127,7 @@ export class Account {
       this.showChangePasswordFields.set(false);
       this.accountMessage.set('Password updated.');
     } catch {
-      this.accountError.set(this.authService.error() ?? 'Unable to change your password.');
+      this.setAccountError(this.authService.error() ?? 'Unable to change your password.');
     } finally {
       this.isSavingPassword.set(false);
     }
@@ -147,9 +149,16 @@ export class Account {
       }));
     } catch (err) {
       console.error('Failed to save theme preference:', err);
-      this.accountError.set('Unable to save your theme preference. Please try again.');
+      this.setAccountError('Unable to save your theme preference. Please try again.');
     } finally {
       this.isSavingTheme.set(false);
+    }
+  }
+
+  async logout(): Promise<void> {
+    const loggedOut = await this.authService.logout();
+    if (loggedOut) {
+      await this.router.navigateByUrl('/');
     }
   }
 
@@ -174,6 +183,10 @@ export class Account {
     this.accountMessage.set(null);
   }
 
+  private setAccountError(message: string): void {
+    this.accountError.set(message);
+  }
+
   private async loadProfile(
     user: NonNullable<ReturnType<AuthService['currentUser']>>,
   ): Promise<void> {
@@ -181,7 +194,7 @@ export class Account {
       this.profile.set(await this.firestoreWriteService.getUserProfile(user));
     } catch (err) {
       console.error('Failed to load user profile:', err);
-      this.accountError.set('Unable to load your account details. Please try again.');
+      this.setAccountError('Unable to load your account details. Please try again.');
     }
   }
 }

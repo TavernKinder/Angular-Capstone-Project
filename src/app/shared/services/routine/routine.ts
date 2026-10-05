@@ -33,6 +33,7 @@ export class RoutineService {
 
   readonly routines = signal<SavedRoutineItem[]>([]);
   readonly isLoading = signal<boolean>(false);
+  readonly error = signal<string | null>(null);
 
   private unsubscribe: (() => void) | null = null;
 
@@ -52,6 +53,7 @@ export class RoutineService {
 
   private initListener(userId: string) {
     this.isLoading.set(true);
+    this.error.set(null);
     try {
       const routinesRef = collection(this.firestore, 'userInfo', userId, 'routines');
       const q = query(routinesRef, orderBy('createdAt', 'desc'));
@@ -67,11 +69,13 @@ export class RoutineService {
         },
         (err) => {
           console.warn('Firestore snapshot error:', err);
+          this.error.set('Unable to load your saved workouts. Please try again.');
           this.isLoading.set(false);
         }
       );
     } catch (e) {
       console.warn('Failed to listen to routines:', e);
+      this.error.set('Unable to load your saved workouts. Please try again.');
       this.isLoading.set(false);
     }
   }
@@ -89,6 +93,9 @@ export class RoutineService {
         return;
       } catch (err) {
         console.warn('Firestore write failed, saving to local state:', err);
+        this.error.set(
+          'Could not save this workout to your account. It will only remain until you leave this page.',
+        );
       }
     }
 
@@ -108,6 +115,7 @@ export class RoutineService {
         await deleteDoc(docRef);
       } catch (err) {
         console.warn('Firestore delete error:', err);
+        this.error.set('Unable to delete this saved workout. Please try again.');
       }
     }
     this.routines.update((prev) => prev.filter((r) => r.id !== id));

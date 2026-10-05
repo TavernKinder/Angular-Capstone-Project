@@ -1,0 +1,27 @@
+@if (errorModal.message(); as message) {
+  <div class="error-overlay">
+    <section
+      class="error-modal"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="error-modal-title"
+      aria-describedby="error-modal-message"
+    >
+      <div class="error-icon" aria-hidden="true">!</div>
+      <div class="error-copy">
+        <p class="error-eyebrow">Something went wrong</p>
+        <h2 id="error-modal-title">We couldn't complete that</h2>
+        <p id="error-modal-message">{{ message }}</p>
+      </div>
+      <button
+        type="button"
+        class="error-close"
+        (click)="close()"
+        aria-label="Close error message"
+        autofocus
+      >
+        Close
+      </button>
+    </section>
+  </div>
+}

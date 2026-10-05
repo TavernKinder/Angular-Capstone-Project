@@ -5,35 +5,62 @@ import { About } from './about/about';
 import { Login } from './login/login';
 import { Signup } from './signup/signup';
 import { DashboardLayout } from './shared/layouts/dashboard-layout/dashboard-layout';
-import { DashboardHome } from './dashboard/dashboard-home/dashboard-home';
-import { Forcast } from './dashboard/forcast/forcast';
-import { Nutrition } from './dashboard/nutrition/nutrition';
-import { Workout } from './dashboard/workout/workout';
-import { Account } from './dashboard/account/account';
 import { authGuard } from './shared/guards/auth-guard';
+import { guestGuard } from './shared/guards/guest-guard';
+import {
+  invalidDashboardRouteGuard,
+  invalidPublicRouteGuard,
+} from './shared/guards/route-not-found-guards';
+import { RouteRedirectPlaceholder } from './shared/components/route-redirect-placeholder/route-redirect-placeholder';
 
 export const routes: Routes = [
+  {
+    path: 'dashboard',
+    component: DashboardLayout,
+    canActivate: [authGuard],
+    canActivateChild: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./dashboard/dashboard-home/dashboard-home').then((m) => m.DashboardHome),
+      },
+      {
+        path: 'forcast',
+        loadComponent: () => import('./dashboard/forcast/forcast').then((m) => m.Forcast),
+      },
+      {
+        path: 'nutrition',
+        loadComponent: () => import('./dashboard/nutrition/nutrition').then((m) => m.Nutrition),
+      },
+      {
+        path: 'workout',
+        loadComponent: () => import('./dashboard/workout/workout').then((m) => m.Workout),
+      },
+      {
+        path: 'account',
+        loadComponent: () => import('./dashboard/account/account').then((m) => m.Account),
+      },
+      {
+        path: '**',
+        component: RouteRedirectPlaceholder,
+        canActivate: [invalidDashboardRouteGuard],
+      },
+    ],
+  },
   {
     path: '',
     component: MainLayout,
     children: [
       { path: '', component: Home },
       { path: 'about', component: About },
-      { path: 'login', component: Login },
-      { path: 'signup', component: Signup },
-    ],
-  },
-  {
-    path: 'dashboard',
-    component: DashboardLayout,
-    canActivate: [authGuard],
-    children: [
-      { path: '', component: DashboardHome },
-      { path: 'forcast', component: Forcast },
-      { path: 'nutrition', component: Nutrition },
-      { path: 'workout', component: Workout },
-      { path: 'account', component: Account },
-      // { path: 'account/logout', component: Logout }, // TODO: add logout component/logic
+      { path: 'login', component: Login, canActivate: [guestGuard] },
+      { path: 'signup', component: Signup, canActivate: [guestGuard] },
+      {
+        path: '**',
+        component: RouteRedirectPlaceholder,
+        canActivate: [invalidPublicRouteGuard],
+      },
     ],
   },
 ];

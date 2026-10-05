@@ -2,12 +2,14 @@ import { Injectable, effect, inject, signal } from '@angular/core';
 import { AuthService } from '../auth/auth';
 import { FirestoreWriteService, ThemePreference } from '../firestore/firestore-write';
 
+
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
   private readonly authService = inject(AuthService);
   private readonly firestoreWriteService = inject(FirestoreWriteService);
+
 
   readonly theme = signal<ThemePreference>('light');
 

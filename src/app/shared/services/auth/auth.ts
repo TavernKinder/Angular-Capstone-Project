@@ -13,6 +13,7 @@ import {
   User,
 } from '@angular/fire/auth';
 import { FirestoreWriteService } from '../firestore/firestore-write';
+import { ErrorModalService } from '../error-modal/error-modal';
 
 function mapAuthError(err: unknown): string {
   const code = (err as { code?: string })?.code;
@@ -42,6 +43,7 @@ function mapAuthError(err: unknown): string {
 export class AuthService {
   private readonly auth = inject(Auth);
   private readonly firestoreWriteService = inject(FirestoreWriteService);
+  private readonly errorModal = inject(ErrorModalService);
 
   // Reflects the current Firebase auth state as a signal for template use
   readonly currentUser = signal<User | null>(null);
@@ -55,6 +57,7 @@ export class AuthService {
   async login(email: string, password: string): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
+    this.errorModal.dismiss();
     try {
       await signInWithEmailAndPassword(this.auth, email, password);
     } catch (err) {
@@ -68,6 +71,7 @@ export class AuthService {
   async signup(email: string, password: string): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
+    this.errorModal.dismiss();
     try {
       const credential = await createUserWithEmailAndPassword(this.auth, email, password);
       await this.firestoreWriteService.createUserProfile(credential.user);
@@ -82,6 +86,7 @@ export class AuthService {
   async loginWithGoogle(): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
+    this.errorModal.dismiss();
     try {
       const credential = await signInWithPopup(this.auth, new GoogleAuthProvider());
       await this.firestoreWriteService.createUserProfile(credential.user);
@@ -93,13 +98,27 @@ export class AuthService {
     }
   }
 
-  async logout(): Promise<void> {
-    await signOut(this.auth);
+  async logout(): Promise<boolean> {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.errorModal.dismiss();
+    try {
+      await signOut(this.auth);
+      return true;
+    } catch (err) {
+      this.error.set('Unable to log out. Please try again.');
+      this.errorModal.showError(this.error() ?? 'Unable to log out. Please try again.');
+      console.error('Failed to log out:', err);
+      return false;
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
   async changePassword(currentPassword: string, newPassword: string): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
+    this.errorModal.dismiss();
     try {
       const user = this.auth.currentUser;
       if (!user?.email) throw new Error('A signed-in user with an email is required.');

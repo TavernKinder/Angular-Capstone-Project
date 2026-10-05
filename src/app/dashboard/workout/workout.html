@@ -126,6 +126,12 @@
   }
 
   <!-- Error State -->
+  @if (routineService.error()) {
+    <div role="alert" class="bg-red-50 text-red-700 px-6 py-4 rounded-2xl border border-red-200 mb-6 shadow-sm">
+      {{ routineService.error() }}
+    </div>
+  }
+
   @if (workoutService.error()) {
     <div class="bg-red-50 text-red-700 p-8 rounded-3xl border border-red-200 mb-6 flex items-start shadow-sm">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-4 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

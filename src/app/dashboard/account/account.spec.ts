@@ -1,5 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth/auth';
 import { FirestoreWriteService } from '../../shared/services/firestore/firestore-write';
 import { ThemeService } from '../../shared/services/theme/theme';
@@ -18,6 +19,7 @@ describe('Account', () => {
     currentUser: () => typeof user | null;
     changePassword: ReturnType<typeof vi.fn>;
     error: ReturnType<typeof vi.fn>;
+    logout: ReturnType<typeof vi.fn>;
   };
   let firestoreWriteService: {
     getUserProfile: ReturnType<typeof vi.fn>;
@@ -34,6 +36,7 @@ describe('Account', () => {
       currentUser: () => user,
       changePassword: vi.fn().mockResolvedValue(undefined),
       error: vi.fn().mockReturnValue(null),
+      logout: vi.fn().mockResolvedValue(true),
     };
     firestoreWriteService = {
       getUserProfile: vi.fn().mockResolvedValue({ userName: 'Tav', preferences: {} }),
@@ -45,6 +48,7 @@ describe('Account', () => {
     await TestBed.configureTestingModule({
       imports: [Account],
       providers: [
+        provideRouter([]),
         { provide: AuthService, useValue: authService },
         { provide: FirestoreWriteService, useValue: firestoreWriteService },
         { provide: ThemeService, useValue: themeService },
@@ -117,6 +121,16 @@ describe('Account', () => {
     await component.changeTheme();
     expect(firestoreWriteService.updateTheme).toHaveBeenCalledWith(user, 'dark');
     expect(themeService.setTheme).toHaveBeenCalledWith('dark');
+  });
+
+  it('logs out and navigates home', async () => {
+    const router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
+
+    await component.logout();
+
+    expect(authService.logout).toHaveBeenCalled();
+    expect(router.navigateByUrl).toHaveBeenCalledWith('/');
   });
 
   it('does not apply the theme when saving fails', async () => {
