@@ -12,7 +12,7 @@
 
 .eyebrow {
   margin: 0 0 0.75rem;
-  color: var(--accent-dark);
+  color: var(--brand-secondary-dark);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -38,7 +38,7 @@
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 0.5rem;
-  background: linear-gradient(135deg, #e3ece5, #f9faf7 60%, #f0e6dc);
+  background: linear-gradient(135deg, var(--hero-from), var(--hero-via) 60%, var(--hero-to));
 }
 
 .carousel-slide {
@@ -65,7 +65,7 @@
 
 .slide-copy p {
   margin: 0;
-  color: var(--muted);
+  color: var(--brand-muted);
   line-height: 1.65;
 }
 
@@ -75,7 +75,7 @@
   justify-content: center;
   gap: 1.25rem;
   padding-top: 1rem;
-  color: var(--muted);
+  color: var(--brand-muted);
   font-size: 0.875rem;
 }
 
@@ -88,12 +88,12 @@
   border: 1px solid var(--line);
   border-radius: 50%;
   background: var(--surface);
-  color: var(--ink);
+  color: var(--brand-primary);
   cursor: pointer;
 }
 
 .carousel-controls button:disabled {
-  color: #a7b2ac;
+  color: var(--subtle);
   cursor: not-allowed;
 }
 
@@ -108,12 +108,12 @@
   width: 0.65rem;
   padding: 0;
   border: 0;
-  background: #bdc9c1;
+  background: var(--dot);
   cursor: pointer;
 }
 
 .carousel-indicators button.active {
-  background: var(--accent);
+  background: var(--brand-secondary);
 }
 
 @media (max-width: 600px) {

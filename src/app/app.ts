@@ -7,12 +7,9 @@ import { ThemeService } from './shared/services/theme/theme';
   imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  host: {
-    '[class.theme-light]': "themeService.theme() === 'light'",
-    '[class.theme-dark]': "themeService.theme() === 'dark'",
-  },
 })
 export class App {
-  protected readonly themeService = inject(ThemeService);
+  // Instantiated here so the saved theme is applied on startup.
+  private readonly themeService = inject(ThemeService);
   protected readonly title = signal('capstoneProject');
 }

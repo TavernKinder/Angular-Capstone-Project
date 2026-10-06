@@ -13,7 +13,7 @@
 }
 
 .site-nav a {
-  color: var(--ink);
+  color: var(--brand-primary);
   font-size: 0.92rem;
   font-weight: 650;
   text-decoration: none;
@@ -30,11 +30,11 @@
   gap: 1.5rem;
 }
 
-.site-links .site-signup {
+.site-links .nav-button {
   padding: 0.65rem 1rem;
   border-radius: 0.3rem;
-  background: var(--ink);
-  color: white;
+  background: var(--brand-primary);
+  color: var(--surface);
 }
 
 @media (max-width: 420px) {
