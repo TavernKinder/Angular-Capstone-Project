@@ -148,6 +148,52 @@
   @if (!workoutService.isLoading() && !workoutService.error()) {
     @if (filteredExercises().length > 0) {
       <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        
+        <!-- Custom Workout Card -->
+        <div 
+          (click)="openCustomModal()"
+          class="bg-indigo-50 border border-indigo-200 border-dashed rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-center items-center h-full group cursor-pointer text-center min-h-[300px]"
+        >
+          <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-indigo-900 mb-2">Custom Workout</h2>
+          <p class="text-sm text-indigo-700 max-w-xs">Can't find what you're looking for? Add your own workout.</p>
+        </div>
+
+        @for (workout of customWorkouts(); track workout.id) {
+          <div class="bg-purple-50 rounded-3xl p-6 shadow-md border border-purple-100 hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden relative group">
+          
+            <!-- Category Pill -->
+            <div class="absolute top-6 right-6 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+              CUSTOM
+            </div>
+
+            <h2 class="text-2xl font-bold text-gray-900 mb-4 pr-16">{{ workout.name }}</h2>
+            
+            <div class="prose prose-sm text-gray-600 max-h-48 overflow-y-auto pr-2 custom-scrollbar flex-grow" 
+                 [innerHTML]="workout.description || 'No description provided.'">
+            </div>
+            
+            @if (workout.details) {
+               <p class="text-xs text-purple-600 font-bold mt-2 border-t border-purple-200 pt-2">Details: {{ workout.details }}</p>
+            }
+
+            <!-- ADD TO ROUTINE BUTTON (Triggers Modal) -->
+            <button 
+              (click)="openAddModal(workout)"
+              class="mt-6 w-full bg-purple-100 hover:bg-purple-600 hover:text-white text-purple-700 font-bold py-3.5 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:shadow-md cursor-pointer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+              </svg>
+              Add to Routine
+            </button>
+          </div>
+        }
+
         @for (exercise of filteredExercises(); track exercise.id) {
           <div class="bg-surface rounded-3xl p-6 shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden relative group">
           
@@ -289,6 +335,90 @@
 
       </form>
 
+    </div>
+  </div>
+}
+
+<!-- CUSTOM WORKOUT MODAL -->
+@if (isCustomModalOpen()) {
+  <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+    
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-gray-100 relative">
+      
+      <button 
+        (click)="closeCustomModal()" 
+        class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <div class="mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-extrabold text-gray-900">Custom Workout</h2>
+        <p class="text-sm text-gray-500 mt-1">Create your own exercise and save it to your library.</p>
+      </div>
+
+      <form (ngSubmit)="confirmAddCustomWorkout()" class="space-y-5">
+        
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Workout Name</label>
+          <input 
+            type="text" 
+            [(ngModel)]="customName" 
+            name="customName"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all"
+            placeholder="e.g. My Home Routine"
+            required
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Description</label>
+          <textarea 
+            [(ngModel)]="customDesc" 
+            name="customDesc"
+            rows="3"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all custom-scrollbar"
+            placeholder="Describe the workout..."
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Extra Details</label>
+          <input 
+            type="text" 
+            [(ngModel)]="customDetails" 
+            name="customDetails"
+            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all"
+            placeholder="e.g. Equipment needed"
+          >
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+          <button 
+            type="button" 
+            (click)="closeCustomModal()" 
+            class="px-5 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 font-semibold text-gray-600 text-sm transition-colors"
+          >
+            Cancel
+          </button>
+          
+          <button 
+            type="submit" 
+            [disabled]="!customName"
+            class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 disabled:cursor-not-allowed text-white font-bold text-sm shadow-md transition-all flex items-center gap-2"
+          >
+            Save Workout
+          </button>
+        </div>
+
+      </form>
     </div>
   </div>
 }

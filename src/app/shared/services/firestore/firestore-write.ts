@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, User } from '@angular/fire/auth';
-import { doc, Firestore, getDoc, setDoc } from '@angular/fire/firestore';
+import { doc, Firestore, getDoc, setDoc, collection, addDoc, getDocs } from '@angular/fire/firestore';
 
 export type ThemePreference = 'light' | 'dark';
 
@@ -58,6 +58,20 @@ export class FirestoreWriteService {
     this.assertSignedIn(user);
 
     await setDoc(doc(this.firestore, 'userInfo', user.uid), { userName }, { merge: true });
+  }
+
+  async createCustomWorkout(user: User, workout: { name: string; description: string; details: string }): Promise<any> {
+    this.assertSignedIn(user);
+    const customWorkoutsRef = collection(this.firestore, 'userInfo', user.uid, 'customWorkouts');
+    const docRef = await addDoc(customWorkoutsRef, workout);
+    return { id: docRef.id, ...workout };
+  }
+
+  async getCustomWorkouts(user: User): Promise<any[]> {
+    this.assertSignedIn(user);
+    const customWorkoutsRef = collection(this.firestore, 'userInfo', user.uid, 'customWorkouts');
+    const snapshot = await getDocs(customWorkoutsRef);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
 
   private assertSignedIn(user: User): void {
