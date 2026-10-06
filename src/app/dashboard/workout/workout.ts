@@ -1,8 +1,10 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Workout as WorkoutService, Exercise } from '../../shared/services/workout/workout';
 import { RoutineService, SavedRoutineItem } from '../../shared/services/routine/routine';
+import { AuthService } from '../../shared/services/auth/auth';
+import { FirestoreWriteService } from '../../shared/services/firestore/firestore-write';
 
 @Component({
   selector: 'app-workout',
@@ -14,6 +16,8 @@ import { RoutineService, SavedRoutineItem } from '../../shared/services/routine/
 export class Workout implements OnInit {
   public workoutService = inject(WorkoutService);
   public routineService = inject(RoutineService);
+  public authService = inject(AuthService);
+  public firestoreWriteService = inject(FirestoreWriteService);
 
   public searchQuery = signal<string>('');
 
@@ -23,6 +27,26 @@ export class Workout implements OnInit {
   public minutesInput = 30;
   public repsInput = 12;
   public dayInput = 'Monday';
+
+  // Custom Workout Modal State
+  public isCustomModalOpen = signal<boolean>(false);
+  public customName = '';
+  public customDesc = '';
+  public customDetails = '';
+  public customWorkouts = signal<any[]>([]);
+
+  constructor() {
+    effect(() => {
+      const user = this.authService.currentUser();
+      if (user) {
+        this.firestoreWriteService.getCustomWorkouts(user).then(workouts => {
+          this.customWorkouts.set(workouts);
+        }).catch(err => console.error('Failed to load custom workouts', err));
+      } else {
+        this.customWorkouts.set([]);
+      }
+    });
+  }
 
   // Feedback Toast
   public toastMessage = signal<string | null>(null);
@@ -40,8 +64,8 @@ export class Workout implements OnInit {
   public filteredExercises = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     const exercises = this.workoutService.exercises();
-    if (!query) return exercises;
-    return exercises.filter((ex) => ex.name.toLowerCase().includes(query));
+    if (!query) return exercises.slice(0, 5);
+    return exercises.filter((ex) => ex.name.toLowerCase().includes(query)).slice(0, 5);
   });
 
   // Group saved routines by day of the week (Monday - Sunday)
@@ -102,6 +126,46 @@ export class Workout implements OnInit {
   deleteRoutine(item: SavedRoutineItem) {
     if (item.id) {
       this.routineService.deleteRoutine(item.id);
+    }
+  }
+
+  openCustomModal() {
+    this.customName = '';
+    this.customDesc = '';
+    this.customDetails = '';
+    this.isCustomModalOpen.set(true);
+  }
+
+  closeCustomModal() {
+    this.isCustomModalOpen.set(false);
+  }
+
+  async confirmAddCustomWorkout() {
+    const user = this.authService.currentUser();
+    if (!user) {
+      this.toastMessage.set('You must be logged in to create a custom workout.');
+      setTimeout(() => this.toastMessage.set(null), 4000);
+      return;
+    }
+
+    if (!this.customName.trim()) {
+      return;
+    }
+
+    try {
+      const newWorkout = await this.firestoreWriteService.createCustomWorkout(user, {
+        name: this.customName,
+        description: this.customDesc,
+        details: this.customDetails
+      });
+
+      this.customWorkouts.update(workouts => [...workouts, newWorkout]);
+      this.closeCustomModal();
+      this.toastMessage.set(`Custom workout "${this.customName}" saved!`);
+      setTimeout(() => this.toastMessage.set(null), 4000);
+    } catch (err) {
+      this.toastMessage.set('Failed to save custom workout.');
+      setTimeout(() => this.toastMessage.set(null), 4000);
     }
   }
 }

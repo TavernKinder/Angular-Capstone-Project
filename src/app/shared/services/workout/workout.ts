@@ -32,7 +32,7 @@ export class Workout {
     this.error.set(null);
 
     // Use exerciseinfo which includes translations (names and descriptions)
-    const url = 'https://wger.de/api/v2/exerciseinfo/?language=2&limit=20';
+    const url = 'https://wger.de/api/v2/exerciseinfo/?language=2&limit=5';
 
     try {
       const data = await firstValueFrom(this.http.get<WgerResponse>(url));
