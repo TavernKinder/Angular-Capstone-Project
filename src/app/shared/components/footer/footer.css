@@ -11,7 +11,7 @@
   justify-content: flex-start;
   gap: 1.25rem;
   margin: 0 auto;
-  color: var(--muted);
+  color: var(--brand-muted);
   font-size: 0.85rem;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .footer-nav a {
-  color: var(--ink);
+  color: var(--brand-primary);
   font-weight: 600;
   text-decoration: none;
 }
@@ -29,16 +29,16 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--ink);
+  color: var(--brand-primary);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
 
 .footer-nav a:hover {
-  color: var(--accent-dark);
+  color: var(--brand-secondary-dark);
 }
 
 .footer-logout:hover {
-  color: var(--accent-dark);
+  color: var(--brand-secondary-dark);
 }

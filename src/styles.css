@@ -1,16 +1,5 @@
 @import 'tailwindcss';
-
-:root {
-  color-scheme: light;
-  --ink: #183b35;
-  --muted: #63736d;
-  --surface: #ffffff;
-  --canvas: #f3f6f2;
-  --line: #d8e1da;
-  --accent: #c66b43;
-  --accent-dark: #a64f2d;
-  --focus: #297b68;
-}
+@import './theme.css';
 
 * {
   box-sizing: border-box;
@@ -24,7 +13,7 @@ body {
 
 body {
   background: var(--canvas);
-  color: var(--ink);
+  color: var(--brand-primary);
   font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
 }
 
@@ -41,6 +30,6 @@ input {
 a:focus-visible,
 button:focus-visible,
 input:focus-visible {
-  outline: 3px solid var(--focus);
+  outline: 3px solid var(--brand-focus);
   outline-offset: 3px;
 }

@@ -1,0 +1,124 @@
+/*
+ * App theme: edit the colors here.
+ * Light values live in :root, dark values in html.theme-dark (class set by ThemeService).
+ * Each token is exposed to Tailwind as a color, e.g. bg-surface, text-brand-primary, border-line.
+ */
+:root {
+  color-scheme: light;
+  --brand-primary: #183b35;
+  --brand-muted: #63736d;
+  --surface: #ffffff;
+  --canvas: #f3f6f2;
+  --line: #d8e1da;
+  --brand-secondary: #c66b43;
+  --brand-secondary-dark: #a64f2d;
+  --brand-focus: #297b68;
+  --on-brand-primary: #ffffff;
+  --field-bg: #fcfdfb;
+  --brand-primary-hover: #24594e;
+  --subtle: #a7b2ac;
+  --dot: #bdc9c1;
+  --hero-from: #e3ece5;
+  --hero-via: #f9faf7;
+  --hero-to: #f0e6dc;
+
+  --danger: #a7322b;
+  --danger-strong: #b34337;
+  --danger-text: #46211f;
+  --danger-muted: #70423e;
+  --danger-bg: #fff1ef;
+  --danger-bg-soft: #fff8f6;
+  --danger-chip: #f8ded9;
+  --danger-border: #efb4ae;
+  --danger-border-strong: #bd5a50;
+  --danger-btn: #a9322c;
+  --danger-btn-hover: #87251f;
+  --on-danger: #ffffff;
+  --danger-ink: #8d2e28;
+  --danger-accent: #b83f35;
+  --danger-field: #a33229;
+
+  --success-bg: #eff8f1;
+  --success-border: #b9d8c6;
+  --success-ink: #24583c;
+
+  --stat-bg: #e5e7eb;
+  --stat-ink: #1f2937;
+}
+
+html.theme-dark {
+  color-scheme: dark;
+  --brand-primary: #e4efe9;
+  --brand-muted: #9fb1a9;
+  --surface: #17221f;
+  --canvas: #0f1715;
+  --line: #2c3b36;
+  --brand-secondary: #e0885f;
+  --brand-secondary-dark: #f0a37d;
+  --brand-focus: #5cc2a8;
+  --on-brand-primary: #0f1715;
+  --field-bg: #1b2724;
+  --brand-primary-hover: #8fd1bf;
+  --subtle: #5d6e67;
+  --dot: #3b4b45;
+  --hero-from: #16231f;
+  --hero-via: #101a17;
+  --hero-to: #231a15;
+
+  --danger: #f08a82;
+  --danger-strong: #e0655a;
+  --danger-text: #fbd9d5;
+  --danger-muted: #e0b4af;
+  --danger-bg: #3a1f1d;
+  --danger-bg-soft: #2f1b19;
+  --danger-chip: #4d2724;
+  --danger-border: #7a3a35;
+  --danger-border-strong: #a8514a;
+  --danger-btn: #c9453d;
+  --danger-btn-hover: #e0584f;
+  --on-danger: #ffffff;
+  --danger-ink: #f4b4ad;
+  --danger-accent: #e0655a;
+  --danger-field: #f08a82;
+
+  --success-bg: #17301f;
+  --success-border: #2f5a40;
+  --success-ink: #9fdcb7;
+
+  --stat-bg: #374151;
+  --stat-ink: #f3f4f6;
+
+  /* Tailwind palette colors used directly in templates, flipped for dark mode. */
+  --color-gray-50: oklch(21% 0.034 264.665);
+  --color-gray-100: oklch(27.8% 0.033 256.848);
+  --color-gray-200: oklch(37.3% 0.034 259.733);
+  --color-gray-300: oklch(44.6% 0.03 256.802);
+  --color-gray-400: oklch(70.7% 0.022 261.325);
+  --color-gray-500: oklch(70.7% 0.022 261.325);
+  --color-gray-600: oklch(87.2% 0.01 258.338);
+  --color-gray-700: oklch(92.8% 0.006 264.531);
+  --color-gray-800: oklch(96.7% 0.003 264.542);
+  --color-gray-900: oklch(98.5% 0.002 247.839);
+  --color-red-50: oklch(25% 0.06 25);
+  --color-red-100: oklch(30% 0.08 25);
+  --color-red-200: oklch(40% 0.12 25);
+  --color-red-600: oklch(75% 0.15 25);
+  --color-red-700: oklch(80% 0.12 25);
+  --color-indigo-50: oklch(28% 0.06 277);
+  --color-indigo-600: oklch(62% 0.2 277);
+  --color-indigo-700: oklch(70% 0.17 277);
+}
+
+@theme inline {
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-secondary-dark: var(--brand-secondary-dark);
+  --color-brand-muted: var(--brand-muted);
+  --color-brand-focus: var(--brand-focus);
+  --color-surface: var(--surface);
+  --color-canvas: var(--canvas);
+  --color-line: var(--line);
+  --color-stat: var(--stat-bg);
+  --color-stat-ink: var(--stat-ink);
+}
