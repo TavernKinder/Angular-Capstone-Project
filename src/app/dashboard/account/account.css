@@ -13,7 +13,7 @@
 
 .account-eyebrow {
   margin: 0 0 0.55rem;
-  color: var(--accent-dark);
+  color: var(--brand-secondary-dark);
   font-size: 0.72rem;
   font-weight: 750;
   letter-spacing: 0.12em;
@@ -23,7 +23,7 @@
 .account-heading h1,
 .card-heading h2 {
   margin: 0;
-  color: var(--ink);
+  color: var(--brand-primary);
   font-family: Georgia, 'Times New Roman', serif;
   font-weight: 500;
 }
@@ -34,7 +34,7 @@
 
 .account-heading > p:last-child {
   margin: 0.75rem 0 0;
-  color: var(--muted);
+  color: var(--brand-muted);
   line-height: 1.6;
 }
 
@@ -75,13 +75,13 @@
 }
 
 .account-summary dt {
-  color: var(--muted);
+  color: var(--brand-muted);
   font-size: 0.9rem;
 }
 
 .account-summary dd {
   margin: 0;
-  color: var(--ink);
+  color: var(--brand-primary);
   font-weight: 650;
   overflow-wrap: anywhere;
 }
@@ -99,7 +99,7 @@
 
 .account-form label {
   margin-top: 0.35rem;
-  color: var(--ink);
+  color: var(--brand-primary);
   font-size: 0.88rem;
   font-weight: 650;
 }
@@ -111,7 +111,7 @@
   border: 1px solid var(--line);
   border-radius: 0.3rem;
   background: var(--surface);
-  color: var(--ink);
+  color: var(--brand-primary);
 }
 
 .account-button {
@@ -119,10 +119,10 @@
   min-height: 2.65rem;
   margin-top: 0.25rem;
   padding: 0.65rem 1rem;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--brand-primary);
   border-radius: 0.3rem;
-  background: var(--ink);
-  color: #fff;
+  background: var(--brand-primary);
+  color: var(--on-brand-primary);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 650;
@@ -131,8 +131,8 @@
 }
 
 .account-button:hover:not(:disabled) {
-  border-color: var(--accent-dark);
-  background: var(--accent-dark);
+  border-color: var(--brand-secondary-dark);
+  background: var(--brand-secondary-dark);
 }
 
 .account-button:disabled {
@@ -143,13 +143,13 @@
 .account-button-secondary {
   border-color: var(--line);
   background: var(--surface);
-  color: var(--ink);
+  color: var(--brand-primary);
 }
 
 .account-button-secondary:hover:not(:disabled) {
-  border-color: var(--ink);
-  background: #f3f6f2;
-  color: var(--ink);
+  border-color: var(--brand-primary);
+  background: var(--canvas);
+  color: var(--brand-primary);
 }
 
 .preference-row {
@@ -162,13 +162,13 @@
 
 .preference-row h3 {
   margin: 0;
-  color: var(--ink);
+  color: var(--brand-primary);
   font-size: 1rem;
 }
 
 .preference-row p {
   margin: 0.35rem 0 0;
-  color: var(--muted);
+  color: var(--brand-muted);
   font-size: 0.9rem;
 }
 
@@ -181,15 +181,15 @@
 }
 
 .account-error {
-  border: 1px solid #efb4ae;
-  background: #fff1ef;
-  color: #8d2e28;
+  border: 1px solid var(--danger-border);
+  background: var(--danger-bg);
+  color: var(--danger-ink);
 }
 
 .account-message {
-  border: 1px solid #b9d8c6;
-  background: #eff8f1;
-  color: #24583c;
+  border: 1px solid var(--success-border);
+  background: var(--success-bg);
+  color: var(--success-ink);
 }
 
 @media (max-width: 700px) {

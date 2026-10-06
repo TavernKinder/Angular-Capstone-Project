@@ -24,6 +24,7 @@ export class Account {
   readonly themeService = inject(ThemeService);
   private readonly router = inject(Router);
   private readonly firestoreWriteService = inject(FirestoreWriteService);
+  readonly themePreference = signal<ThemePreference | null>(null);
 
   readonly profile = signal<UserProfile | null>(null);
   readonly accountError = signal<string | null>(null);

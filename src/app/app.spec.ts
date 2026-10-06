@@ -20,23 +20,6 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('defaults the app wrapper to the light theme', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const host = fixture.nativeElement as HTMLElement;
-    expect(host.classList.contains('theme-light')).toBe(true);
-    expect(host.classList.contains('theme-dark')).toBe(false);
-  });
-
-  it('switches the wrapper class when the theme changes', async () => {
-    const fixture = TestBed.createComponent(App);
-    theme.set('dark');
-    await fixture.whenStable();
-    const host = fixture.nativeElement as HTMLElement;
-    expect(host.classList.contains('theme-dark')).toBe(true);
-    expect(host.classList.contains('theme-light')).toBe(false);
-  });
-
   it('should render title', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();

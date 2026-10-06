@@ -3,11 +3,11 @@
     <a class="site-home" routerLink="/">Home</a>
     <div class="site-links">
       @if (authService.currentUser()) {
-        <a class="site-signup" routerLink="/dashboard">Dashboard</a>
+        <a class="nav-button" routerLink="/dashboard">Dashboard</a>
         <a routerLink="/dashboard/account">Account details</a>
       } @else {
         <a routerLink="/login">Log in</a>
-        <a class="site-signup" routerLink="/signup">Sign up</a>
+        <a class="nav-button" routerLink="/signup">Sign up</a>
       }
     </div>
   </nav>

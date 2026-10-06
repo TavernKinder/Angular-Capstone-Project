@@ -115,7 +115,12 @@
       <div class="preference-row">
         <div>
           <h3>Appearance</h3>
-          <p>Current theme: {{ themeService.theme() === 'dark' ? 'Dark' : 'Light' }}</p>
+          <p>
+            Current theme: {{ themeService.theme() === 'dark' ? 'Dark' : 'Light' }}
+            @if (themeService.isDeviceDefault()) {
+              (device default)
+            }
+          </p>
         </div>
         <button
           class="account-button account-button-secondary"

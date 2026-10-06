@@ -28,6 +28,7 @@ describe('Account', () => {
   };
   let themeService: {
     theme: ReturnType<typeof signal<'light' | 'dark'>>;
+    isDeviceDefault: ReturnType<typeof signal<boolean>>;
     setTheme: ReturnType<typeof vi.fn>;
   };
 
@@ -43,7 +44,11 @@ describe('Account', () => {
       updateUserName: vi.fn().mockResolvedValue(undefined),
       updateTheme: vi.fn().mockResolvedValue(undefined),
     };
-    themeService = { theme: signal<'light' | 'dark'>('light'), setTheme: vi.fn() };
+    themeService = {
+      theme: signal<'light' | 'dark'>('light'),
+      isDeviceDefault: signal(false),
+      setTheme: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [Account],

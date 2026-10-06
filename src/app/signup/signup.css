@@ -15,7 +15,7 @@
 
 .eyebrow {
   margin: 0 0 0.6rem;
-  color: var(--accent-dark);
+  color: var(--brand-secondary-dark);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -31,7 +31,7 @@
 
 .auth-intro {
   margin: 0.65rem 0 1.75rem;
-  color: var(--muted);
+  color: var(--brand-muted);
 }
 
 .auth-panel form {
@@ -51,12 +51,12 @@
   padding: 0.7rem 0.8rem;
   border: 1px solid var(--line);
   border-radius: 0.3rem;
-  background: #fcfdfb;
-  color: var(--ink);
+  background: var(--field-bg);
+  color: var(--brand-primary);
 }
 
 .auth-panel input[aria-invalid='true'] {
-  border-color: #b34337;
+  border-color: var(--danger-strong);
 }
 
 .field-error,
@@ -69,11 +69,11 @@
 
 .field-error,
 .form-error {
-  color: #a33229;
+  color: var(--danger-field);
 }
 
 .form-message {
-  color: var(--focus);
+  color: var(--brand-focus);
 }
 
 .auth-submit {
@@ -81,14 +81,14 @@
   margin-top: 0.75rem;
   border: 0;
   border-radius: 0.3rem;
-  background: var(--ink);
-  color: white;
+  background: var(--brand-primary);
+  color: var(--on-brand-primary);
   font-weight: 650;
   cursor: pointer;
 }
 
 .auth-submit:hover {
-  background: #24594e;
+  background: var(--brand-primary-hover);
 }
 
 .auth-google {
@@ -128,13 +128,13 @@
 
 .auth-switch {
   margin: 0.9rem 0 0;
-  color: var(--muted);
+  color: var(--brand-muted);
   font-size: 0.9rem;
   text-align: center;
 }
 
 .auth-switch a {
-  color: var(--accent-dark);
+  color: var(--brand-secondary-dark);
   font-weight: 650;
   text-underline-offset: 0.2em;
 }

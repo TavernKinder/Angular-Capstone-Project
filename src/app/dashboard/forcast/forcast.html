@@ -6,7 +6,9 @@
 
   <!-- Loading State -->
   @if (weatherService.isLoading()) {
-    <div class="flex items-center justify-center p-12 bg-white rounded-2xl shadow-sm border border-gray-100">
+    <div
+      class="flex items-center justify-center p-12 bg-surface rounded-2xl shadow-sm border border-gray-100"
+    >
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
     </div>
   }
@@ -14,8 +16,19 @@
   <!-- Error State -->
   @if (weatherService.error()) {
     <div class="bg-red-50 text-red-600 p-6 rounded-2xl border border-red-100 mb-6 flex items-start">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 mr-3 shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
       </svg>
       <div>
         <h3 class="font-bold">Error loading weather</h3>
@@ -27,41 +40,58 @@
   <!-- Weather Data View -->
   @if (weatherService.weatherData(); as data) {
     <!-- Current Weather Card -->
-    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-8 text-white shadow-lg mb-8 relative overflow-hidden">
+    <div
+      class="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-8 text-white shadow-lg mb-8 relative overflow-hidden"
+    >
       <!-- Decorative circles -->
-      <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mt-20 -mr-20"></div>
+      <div
+        class="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full -mt-20 -mr-20"
+      ></div>
       <div class="absolute bottom-0 right-32 w-32 h-32 bg-white opacity-10 rounded-full mb-8"></div>
-      
+
       <div class="relative z-10">
         <div class="flex justify-between items-start mb-12">
           <div>
             <h2 class="text-xl font-medium opacity-90">Current Weather</h2>
             <div class="flex items-center mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                  clip-rule="evenodd"
+                />
               </svg>
               <span class="opacity-90 text-sm">{{ weatherService.locationName() }}</span>
             </div>
           </div>
           <div class="text-5xl font-bold">
-            {{ data.current.temperature_2m | number:'1.0-0' }}&deg;F
+            {{ data.current.temperature_2m | number: '1.0-0' }}&deg;F
           </div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-white bg-opacity-20 rounded-2xl p-4 backdrop-blur-md">
+          <div class="bg-stat text-stat-ink rounded-2xl p-4">
             <p class="text-sm opacity-80 mb-1">Feels Like</p>
-            <p class="text-xl font-semibold">{{ data.current.apparent_temperature | number:'1.0-0' }}&deg;</p>
+            <p class="text-xl font-semibold">
+              {{ data.current.apparent_temperature | number: '1.0-0' }}&deg;
+            </p>
           </div>
-          <div class="bg-white bg-opacity-20 rounded-2xl p-4 backdrop-blur-md">
+          <div class="bg-stat text-stat-ink rounded-2xl p-4">
             <p class="text-sm opacity-80 mb-1">Humidity</p>
             <p class="text-xl font-semibold">{{ data.current.relative_humidity_2m }}%</p>
           </div>
-          <div class="bg-white bg-opacity-20 rounded-2xl p-4 backdrop-blur-md">
+          <div class="bg-stat text-stat-ink rounded-2xl p-4">
             <p class="text-sm opacity-80 mb-1">Wind</p>
-            <p class="text-xl font-semibold">{{ data.current.wind_speed_10m | number:'1.0-0' }} mph</p>
+            <p class="text-xl font-semibold">
+              {{ data.current.wind_speed_10m | number: '1.0-0' }} mph
+            </p>
           </div>
-          <div class="bg-white bg-opacity-20 rounded-2xl p-4 backdrop-blur-md">
+          <div class="bg-stat text-stat-ink rounded-2xl p-4">
             <p class="text-sm opacity-80 mb-1">Precipitation</p>
             <p class="text-xl font-semibold">{{ data.current.precipitation }} in</p>
           </div>
@@ -71,39 +101,74 @@
 
     <!-- 7-Day Forecast -->
     <h2 class="text-2xl font-bold text-gray-800 mb-6">7-Day Forecast</h2>
-    <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-surface rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
       <div class="divide-y divide-gray-100">
         @for (time of data.daily.time; track time; let i = $index) {
           <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
             <div class="w-1/4 font-medium text-gray-700">
-              {{ time | date:'EEEE' }}
+              {{ time | date: 'EEEE' }}
             </div>
-            
+
             <!-- Weather icon placeholder based on precipitation -->
             <div class="w-1/4 flex justify-center text-blue-500">
               @if (data.daily.precipitation_probability_max[i] > 50) {
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-8 w-8 text-blue-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
                 </svg>
               } @else {
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-8 w-8 text-yellow-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
                 </svg>
               }
             </div>
 
             <div class="w-1/4 text-center text-sm">
               <span class="text-blue-500 font-medium flex items-center justify-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M2.93 17.07A10 10 0 1117.07 2.93 10 10 0 012.93 17.07zm12.73-1.41A8 8 0 104.34 4.34a8 8 0 0011.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z" clip-rule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M2.93 17.07A10 10 0 1117.07 2.93 10 10 0 012.93 17.07zm12.73-1.41A8 8 0 104.34 4.34a8 8 0 0011.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
                 {{ data.daily.precipitation_probability_max[i] }}%
               </span>
             </div>
 
             <div class="w-1/4 text-right flex justify-end gap-3 font-medium">
-              <span class="text-gray-900">{{ data.daily.temperature_2m_max[i] | number:'1.0-0' }}&deg;</span>
-              <span class="text-gray-400">{{ data.daily.temperature_2m_min[i] | number:'1.0-0' }}&deg;</span>
+              <span class="text-gray-900"
+                >{{ data.daily.temperature_2m_max[i] | number: '1.0-0' }}&deg;</span
+              >
+              <span class="text-gray-400"
+                >{{ data.daily.temperature_2m_min[i] | number: '1.0-0' }}&deg;</span
+              >
             </div>
           </div>
         }
