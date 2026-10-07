@@ -131,6 +131,55 @@
           {{ isSavingTheme() ? 'Saving...' : 'Change theme' }}
         </button>
       </div>
+      <div>
+        <div class="preference-row location-preference">
+          <div>
+            <h3>Weather location</h3>
+            <p>
+              Saved location:
+              {{ profile()?.preferences?.defaultLocation?.name || 'Austin, TX (app default)' }}
+            </p>
+          </div>
+        </div>
+        <form class="account-form location-form" (ngSubmit)="searchLocations()">
+          <label for="custom-location">Search for a city or place</label>
+          <div class="location-search">
+            <input
+              id="custom-location"
+              type="search"
+              autocomplete="off"
+              placeholder="e.g. Austin, Texas"
+              [formControl]="locationSearchControl"
+            />
+            <button
+              class="account-button account-button-secondary"
+              type="submit"
+              [disabled]="isSearchingLocations() || locationSearchControl.value.trim().length < 2"
+            >
+              {{ isSearchingLocations() ? 'Searching...' : 'Search' }}
+            </button>
+          </div>
+        </form>
+        @if (locationResults().length > 0) {
+          <ul class="location-results" aria-label="Location search results">
+            @for (location of locationResults(); track location.latitude + ',' + location.longitude) {
+              <li>
+                <span>
+                  {{ location.name }}@if (location.admin1) {, {{ location.admin1 }}}@if (location.country) {, {{ location.country }}}
+                </span>
+                <button
+                  class="account-button account-button-secondary"
+                  type="button"
+                  [disabled]="isSavingLocation()"
+                  (click)="saveDefaultLocation(location)"
+                >
+                  {{ isSavingLocation() ? 'Saving...' : 'Use this location' }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
     </section>
   </div>
 </main>

@@ -1,0 +1,101 @@
+﻿<section class="bg-surface border border-line rounded-sm" aria-label="Food log">
+  @if (foodLog.error(); as error) {
+    <p class="p-6 text-danger-text text-sm" role="alert">{{ error }}</p>
+  } @else if (foodLog.isLoading() && foodLog.isEmpty()) {
+    <p class="p-8 text-center text-brand-muted text-sm">Loading your food log...</p>
+  } @else if (foodLog.isEmpty()) {
+    <div class="p-8 text-center">
+      <h2 class="text-lg font-bold text-brand-primary mb-2">Start Logging</h2>
+      <p class="text-brand-muted text-sm mb-4">
+        Search for a food below, or create your own, and add it to today's log.
+      </p>
+      <button
+        type="button"
+        class="px-4 py-2 rounded-sm bg-brand-primary text-on-brand-primary text-sm font-semibold hover:bg-brand-primary-hover"
+        (click)="focusSearch()"
+      >
+        Find a food
+      </button>
+    </div>
+  } @else {
+    <div class="flex items-center justify-between gap-3 p-4 border-b border-line">
+      <button
+        type="button"
+        class="carousel-nav"
+        aria-label="Previous logged day"
+        [disabled]="!foodLog.hasPrevious()"
+        (click)="foodLog.previous()"
+      >
+        &#8592;
+      </button>
+      <div class="text-center">
+        <h2 class="font-bold text-brand-primary">
+          @if (dayLabel(); as label) {
+            {{ label }}
+          } @else {
+            {{ selectedDate() | date: 'EEE, MMM d' }}
+          }
+        </h2>
+        <p class="text-xs text-brand-muted">{{ selectedDate() | date: 'longDate' }} &middot; {{ position() }}</p>
+      </div>
+      <button
+        type="button"
+        class="carousel-nav"
+        aria-label="Next logged day"
+        [disabled]="!foodLog.hasNext()"
+        (click)="foodLog.next()"
+      >
+        &#8594;
+      </button>
+    </div>
+
+    <ul class="divide-y divide-line" aria-live="polite">
+      @for (entry of foodLog.selectedEntries(); track entry.id) {
+        <li class="flex items-center justify-between gap-3 p-4">
+          <div class="min-w-0">
+            <p class="font-semibold text-brand-primary truncate">{{ entry.name }}</p>
+            @if (entry.brand) {
+              <p class="text-[11px] text-brand-muted uppercase tracking-wide truncate">{{ entry.brand }}</p>
+            }
+            <p class="text-xs text-brand-muted mt-1">
+              {{ entry.calories ?? '-' }} kcal &middot; P {{ entry.protein ?? '-' }}g &middot; C {{ entry.carbs ?? '-' }}g &middot; F {{ entry.fat ?? '-' }}g
+            </p>
+          </div>
+          <button
+            type="button"
+            class="shrink-0 p-2 rounded-full text-brand-muted hover:text-danger-text hover:bg-canvas"
+            [attr.aria-label]="'Remove ' + entry.name"
+            (click)="removing.set(entry)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </li>
+      }
+    </ul>
+
+    <div class="p-4 border-t border-line bg-canvas rounded-b-sm">
+      <p class="text-[10px] font-bold uppercase tracking-widest text-brand-muted mb-2">
+        Daily total (sum of per-100g values)
+      </p>
+      <div class="grid grid-cols-4 gap-2 text-center">
+        <div><p class="text-xs text-brand-muted">Calories</p><p class="font-bold text-brand-primary">{{ totals().calories | number: '1.0-0' }}</p></div>
+        <div><p class="text-xs text-brand-muted">Protein</p><p class="font-bold text-brand-primary">{{ totals().protein | number: '1.0-1' }}g</p></div>
+        <div><p class="text-xs text-brand-muted">Carbs</p><p class="font-bold text-brand-primary">{{ totals().carbs | number: '1.0-1' }}g</p></div>
+        <div><p class="text-xs text-brand-muted">Fat</p><p class="font-bold text-brand-primary">{{ totals().fat | number: '1.0-1' }}g</p></div>
+      </div>
+    </div>
+  }
+</section>
+
+@if (removing(); as entry) {
+  <app-confirm-dialog
+    heading="Remove from your log?"
+    [message]="'Remove ' + entry.name + ' from this day?'"
+    confirmLabel="Remove"
+    [isBusy]="isRemoving()"
+    (confirmed)="confirmRemove()"
+    (cancelled)="removing.set(null)"
+  />
+}
