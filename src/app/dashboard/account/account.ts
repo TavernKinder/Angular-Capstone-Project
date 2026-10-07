@@ -1,13 +1,15 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth/auth';
 import {
+  DefaultLocationPreference,
   FirestoreWriteService,
   ThemePreference,
   UserProfile,
 } from '../../shared/services/firestore/firestore-write';
 import { ThemeService } from '../../shared/services/theme/theme';
+import { LocationSearchResult, Weather } from '../../shared/services/weather/weather';
 
 const USER_NAME_MIN_LENGTH = 3;
 const USER_NAME_MAX_LENGTH = 30;
@@ -15,13 +17,14 @@ const PASSWORD_MIN_LENGTH = 8;
 
 @Component({
   selector: 'app-account',
-  imports: [ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './account.html',
   styleUrl: './account.css',
 })
 export class Account {
   readonly authService = inject(AuthService);
   readonly themeService = inject(ThemeService);
+  readonly weatherService = inject(Weather);
   private readonly router = inject(Router);
   private readonly firestoreWriteService = inject(FirestoreWriteService);
   readonly themePreference = signal<ThemePreference | null>(null);
@@ -32,6 +35,9 @@ export class Account {
   readonly isSavingTheme = signal(false);
   readonly isSavingUserName = signal(false);
   readonly isSavingPassword = signal(false);
+  readonly isSearchingLocations = signal(false);
+  readonly isSavingLocation = signal(false);
+  readonly locationResults = signal<LocationSearchResult[]>([]);
   readonly showChangeUsernameFields = signal(false);
   readonly showChangePasswordFields = signal(false);
 
@@ -46,6 +52,7 @@ export class Account {
   );
 
   readonly userNameControl = new FormControl('', { nonNullable: true });
+  readonly locationSearchControl = new FormControl('', { nonNullable: true });
   readonly passwordForm = new FormGroup({
     currentPassword: new FormControl('', { nonNullable: true }),
     newPassword: new FormControl('', { nonNullable: true }),
@@ -171,12 +178,60 @@ export class Account {
     return;
   }
 
-  // Not implemented yet: needs a location picker and the weather service to read it.
-  changeDefaultLocation(): void {
-    // const user = this.authService.currentUser();
-    // if (!user) return;
-    // await this.firestoreWriteService.updateDefaultLocation(user, 'Austin');
-    return;
+  async searchLocations(): Promise<void> {
+    if (this.isSearchingLocations()) return;
+
+    const query = this.locationSearchControl.value.trim();
+    this.clearMessages();
+    this.locationResults.set([]);
+    if (query.length < 2) {
+      this.setAccountError('Enter at least two characters to search for a location.');
+      return;
+    }
+
+    this.isSearchingLocations.set(true);
+    try {
+      const results = await this.weatherService.searchLocations(query);
+      this.locationResults.set(results);
+      if (results.length === 0) this.setAccountError('No matching locations found.');
+    } catch (err) {
+      console.error('Failed to search for locations:', err);
+      this.setAccountError('Unable to search for locations. Please try again.');
+    } finally {
+      this.isSearchingLocations.set(false);
+    }
+  }
+
+  async saveDefaultLocation(result: LocationSearchResult): Promise<void> {
+    const user = this.authService.currentUser();
+    if (!user || this.isSavingLocation()) return;
+
+    const defaultLocation: DefaultLocationPreference = {
+      name: [result.name, result.admin1, result.country].filter(Boolean).join(', '),
+      coordinates: { latitude: result.latitude, longitude: result.longitude },
+    };
+
+    this.clearMessages();
+    this.isSavingLocation.set(true);
+    try {
+      await this.firestoreWriteService.updateDefaultLocation(user, defaultLocation);
+      this.profile.update((profile) => ({
+        ...(profile ?? {}),
+        preferences: { ...profile?.preferences, defaultLocation },
+      }));
+      this.locationResults.set([]);
+      this.accountMessage.set('Weather location saved.');
+      await this.weatherService.loadWeatherForLocation(
+        result.latitude,
+        result.longitude,
+        defaultLocation.name,
+      );
+    } catch (err) {
+      console.error('Failed to save the default location:', err);
+      this.setAccountError('Unable to save your weather location. Please try again.');
+    } finally {
+      this.isSavingLocation.set(false);
+    }
   }
 
   private clearMessages(): void {

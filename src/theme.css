@@ -119,6 +119,12 @@ html.theme-dark {
   --color-surface: var(--surface);
   --color-canvas: var(--canvas);
   --color-line: var(--line);
+  --color-on-brand-primary: var(--on-brand-primary);
+  --color-danger-btn: var(--danger-btn);
+  --color-danger-btn-hover: var(--danger-btn-hover);
+  --color-on-danger: var(--on-danger);
+  --color-danger-text: var(--danger);
+  --color-field: var(--field-bg);
   --color-stat: var(--stat-bg);
   --color-stat-ink: var(--stat-ink);
 }

@@ -18,6 +18,11 @@ vi.mock('@angular/fire/firestore', () => {
     doc: docMock,
     getDoc: getDocMock,
     setDoc: setDocMock,
+    addDoc: vi.fn(),
+    arrayUnion: (...v: unknown[]) => ({ union: v }),
+    collection: vi.fn(() => 'col-ref'),
+    deleteDoc: vi.fn(),
+    getDocs: vi.fn(),
   };
 });
 

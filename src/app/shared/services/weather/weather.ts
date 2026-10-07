@@ -21,11 +21,28 @@ export interface WeatherData {
   };
 }
 
+export interface LocationSearchResult {
+  name: string;
+  admin1?: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+}
+
+interface LocationSearchResponse {
+  results?: LocationSearchResult[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class Weather {
   private readonly http = inject(HttpClient);
+  private readonly defaultLocation = {
+    name: 'Austin, TX (Default)',
+    latitude: 30.2672,
+    longitude: -97.7431,
+  };
 
   // Signals for state management
   readonly weatherData = signal<WeatherData | null>(null);
@@ -33,17 +50,43 @@ export class Weather {
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
+  async searchLocations(query: string): Promise<LocationSearchResult[]> {
+    const searchTerm = query.trim();
+    if (searchTerm.length < 2) {
+      throw new Error('Enter at least two characters to search for a location.');
+    }
+
+    const url =
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchTerm)}` +
+      '&count=5&language=en&format=json';
+    const response = await firstValueFrom(this.http.get<LocationSearchResponse>(url));
+    return (response.results ?? []).filter(
+      (location) =>
+        typeof location.name === 'string' &&
+        typeof location.country === 'string' &&
+        Number.isFinite(location.latitude) &&
+        Number.isFinite(location.longitude),
+    );
+  }
+
   async loadWeatherForCurrentLocation(): Promise<void> {
+    try {
+      await this.loadWeatherForDeviceLocation();
+    } catch (err) {
+      console.warn('Unable to detect the current location; using the default location:', err);
+      await this.loadDefaultLocation();
+    }
+  }
+
+  async loadWeatherForDeviceLocation(): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
 
-    if (!navigator.geolocation) {
-      this.error.set('Geolocation is not supported by your browser.');
-      this.isLoading.set(false);
-      return;
-    }
-
     try {
+      if (!navigator.geolocation) {
+        throw new Error('Geolocation is not supported by this browser.');
+      }
+
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
       });
@@ -51,12 +94,34 @@ export class Weather {
       const { latitude, longitude } = position.coords;
       await this.fetchWeather(latitude, longitude);
       await this.fetchLocationName(latitude, longitude);
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to get location.');
-      // Fallback to a default location (e.g. Austin, TX) if location is denied
-      console.log('Falling back to default location (Austin, TX)');
-      await this.fetchWeather(30.2672, -97.7431);
-      this.locationName.set('Austin, TX (Default)');
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  async loadWeatherForLocation(
+    latitude: number,
+    longitude: number,
+    locationName?: string,
+  ): Promise<void> {
+    this.isLoading.set(true);
+    this.error.set(null);
+    if (locationName) this.locationName.set(locationName);
+
+    try {
+      await this.fetchWeather(latitude, longitude);
+      if (!locationName) await this.fetchLocationName(latitude, longitude);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  async loadDefaultLocation(): Promise<void> {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.locationName.set(this.defaultLocation.name);
+    try {
+      await this.fetchWeather(this.defaultLocation.latitude, this.defaultLocation.longitude);
     } finally {
       this.isLoading.set(false);
     }
