@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../shared/services/auth/auth';
 import { FirestoreWriteService } from '../../shared/services/firestore/firestore-write';
@@ -12,6 +12,7 @@ import { Weather } from '../../shared/services/weather/weather';
 })
 export class Forcast implements OnInit {
   public weatherService = inject(Weather);
+  public isForecastExpanded = signal(false);
   private readonly authService = inject(AuthService);
   private readonly firestoreWriteService = inject(FirestoreWriteService);
 
@@ -58,5 +59,9 @@ export class Forcast implements OnInit {
     }
 
     await this.weatherService.loadDefaultLocation();
+  }
+
+  toggleForecast() {
+    this.isForecastExpanded.update(v => !v);
   }
 }

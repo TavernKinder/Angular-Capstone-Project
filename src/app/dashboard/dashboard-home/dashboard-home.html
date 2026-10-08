@@ -5,9 +5,12 @@
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Weather Widget Bubble -->
-    <div class="col-span-1 lg:col-span-2 bg-surface/50 backdrop-blur-xl border border-gray-100 shadow-xl rounded-[2.5rem] overflow-hidden">
-      <app-forcast></app-forcast>
+    <!-- Left Column: Weather -->
+    <div class="col-span-1 lg:col-span-2 flex flex-col gap-8">
+      <!-- Weather Widget Bubble -->
+      <div class="bg-surface/50 backdrop-blur-xl border border-gray-100 shadow-xl rounded-[2.5rem] overflow-hidden h-full">
+        <app-forcast></app-forcast>
+      </div>
     </div>
 
     <!-- Right Side Widgets (Nutrition & Today's Workouts) -->
@@ -73,5 +76,10 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- Weekly Schedule Component (Full Width) -->
+  <div class="mt-8">
+    <app-weekly-schedule></app-weekly-schedule>
   </div>
 </div>
