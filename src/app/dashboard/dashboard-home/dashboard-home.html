@@ -8,7 +8,7 @@
     <!-- Left Column: Weather -->
     <div class="col-span-1 lg:col-span-2 flex flex-col gap-8">
       <!-- Weather Widget Bubble -->
-      <div class="bg-surface/50 backdrop-blur-xl border border-gray-100 shadow-xl rounded-[2.5rem] overflow-hidden h-full">
+      <div class="bg-surface/50 backdrop-blur-xl border border-line shadow-sm rounded-lg overflow-hidden h-full">
         <app-forcast></app-forcast>
       </div>
     </div>
@@ -17,26 +17,26 @@
     <div class="col-span-1 flex flex-col gap-6">
       
       <!-- Nutrition Bubble -->
-      <div class="bg-gradient-to-br from-purple-500 to-fuchsia-600 rounded-[2.5rem] p-8 text-white shadow-lg flex flex-col justify-between relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mt-10 -mr-10 pointer-events-none"></div>
+      <div class="bg-feature rounded-lg p-8 text-on-feature shadow-sm flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-on-feature opacity-10 rounded-full -mt-10 -mr-10 pointer-events-none"></div>
         <div>
           <h2 class="text-2xl font-bold mb-2">Nutrition</h2>
           <p class="opacity-90 text-sm">Log your meals to track macros today.</p>
         </div>
-        <a routerLink="/dashboard/nutrition" class="mt-8 bg-white/20 hover:bg-white/30 backdrop-blur-md px-6 py-3 rounded-full text-center font-medium transition-colors cursor-pointer w-max text-sm">
+        <a routerLink="/dashboard/nutrition" class="mt-8 bg-on-feature/20 hover:bg-on-feature/30 backdrop-blur-md px-6 py-3 rounded-md text-center font-medium transition-colors cursor-pointer w-max text-sm">
           Open Nutrition Log
         </a>
       </div>
 
       <!-- GREEN WORKOUTS BUBBLE (Lists Today's Workouts for the Current Day of Week) -->
-      <div class="bg-gradient-to-br from-emerald-500 to-teal-700 rounded-[2.5rem] p-8 text-white shadow-lg flex flex-col justify-between relative overflow-hidden">
-        <div class="absolute bottom-0 left-0 w-32 h-32 bg-white opacity-10 rounded-full -mb-10 -ml-10 pointer-events-none"></div>
+      <div class="bg-feature rounded-lg p-8 text-on-feature shadow-sm flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-32 h-32 bg-on-feature opacity-10 rounded-full -mb-10 -ml-10 pointer-events-none"></div>
         
         <div>
           <!-- Header with Today's Day Name -->
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-2xl font-extrabold tracking-tight">Today's Workouts</h2>
-            <span class="bg-white/20 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+            <span class="bg-on-feature/20 backdrop-blur-md text-on-feature px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider">
               {{ todayName() }}
             </span>
           </div>
@@ -45,29 +45,29 @@
           @if (todaysWorkouts().length > 0) {
             <div class="space-y-2.5 my-4 max-h-56 overflow-y-auto pr-1 custom-scrollbar">
               @for (workout of todaysWorkouts(); track workout.id) {
-                <div class="bg-white/15 backdrop-blur-md rounded-2xl p-3.5 border border-white/20 flex items-center justify-between">
+                <div class="bg-on-feature/15 backdrop-blur-md rounded-lg p-3.5 border border-on-feature/20 flex items-center justify-between">
                   <div>
-                    <h4 class="font-bold text-base text-white leading-snug">{{ workout.exerciseName }}</h4>
-                    <div class="flex items-center gap-2 mt-1 text-xs font-semibold text-emerald-100">
+                    <h4 class="font-bold text-base text-on-feature leading-snug">{{ workout.exerciseName }}</h4>
+                    <div class="flex items-center gap-2 mt-1 text-xs font-semibold text-on-feature opacity-90">
                       <span>⏱️ {{ workout.minutes }} mins</span>
                       <span>•</span>
                       <span>🔄 {{ workout.reps }} reps</span>
                     </div>
                   </div>
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-300 animate-pulse shrink-0"></span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-on-feature animate-pulse shrink-0"></span>
                 </div>
               }
             </div>
           } @else {
             <!-- Empty State for Today -->
-            <div class="my-6 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15 text-center">
-              <p class="text-sm font-semibold text-emerald-50">No workouts scheduled for {{ todayName() }}.</p>
-              <p class="text-xs text-emerald-200 mt-1">Rest day or add a workout from the planner!</p>
+            <div class="my-6 bg-on-feature/10 backdrop-blur-md rounded-lg p-4 border border-on-feature/15 text-center">
+              <p class="text-sm font-semibold text-on-feature opacity-90">No workouts scheduled for {{ todayName() }}.</p>
+              <p class="text-xs text-on-feature opacity-90 mt-1">Rest day or add a workout from the planner!</p>
             </div>
           }
         </div>
 
-        <a routerLink="/dashboard/workout" class="mt-6 bg-white/20 hover:bg-white/30 backdrop-blur-md px-6 py-3 rounded-full text-center font-bold text-sm transition-colors cursor-pointer w-max inline-flex items-center gap-2">
+        <a routerLink="/dashboard/workout" class="mt-6 bg-on-feature/20 hover:bg-on-feature/30 backdrop-blur-md px-6 py-3 rounded-md text-center font-bold text-sm transition-colors cursor-pointer w-max inline-flex items-center gap-2">
           <span>Manage Schedule</span>
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

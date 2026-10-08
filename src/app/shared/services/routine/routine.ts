@@ -11,6 +11,7 @@ import {
   orderBy,
   serverTimestamp,
 } from '@angular/fire/firestore';
+import { ErrorModalService } from '../error-modal/error-modal';
 
 export interface SavedRoutineItem {
   id?: string;
@@ -29,6 +30,7 @@ export interface SavedRoutineItem {
 export class RoutineService {
   private readonly auth = inject(Auth);
   private readonly firestore = inject(Firestore);
+  private readonly errorModal = inject(ErrorModalService);
   private readonly user$ = user(this.auth);
 
   readonly routines = signal<SavedRoutineItem[]>([]);
@@ -115,7 +117,10 @@ export class RoutineService {
         await deleteDoc(docRef);
       } catch (err) {
         console.warn('Firestore delete error:', err);
-        this.error.set('Unable to delete this saved workout. Please try again.');
+        const message = 'Unable to delete this saved workout. Please try again.';
+        this.error.set(message);
+        this.errorModal.showError(message);
+        return;
       }
     }
     this.routines.update((prev) => prev.filter((r) => r.id !== id));

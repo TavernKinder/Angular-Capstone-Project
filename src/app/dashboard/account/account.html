@@ -100,7 +100,7 @@
       }
       @if (authService.currentUser()) {
         <div>
-          <button class="account-button account-button-secondary" type="button" (click)="logout()">
+          <button class="account-button account-button-secondary" type="button" (click)="isConfirmingLogout.set(true)">
             Logout
           </button>
         </div>
@@ -183,3 +183,14 @@
     </section>
   </div>
 </main>
+
+@if (isConfirmingLogout()) {
+  <app-confirm-dialog
+    heading="Log out?"
+    message="Are you sure you want to log out of your account?"
+    confirmLabel="Log out"
+    [isBusy]="isLoggingOut()"
+    (confirmed)="logout()"
+    (cancelled)="isConfirmingLogout.set(false)"
+  />
+}

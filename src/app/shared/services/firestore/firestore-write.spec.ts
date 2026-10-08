@@ -1,44 +1,44 @@
 import { TestBed } from '@angular/core/testing';
 import { Auth } from '@angular/fire/auth';
-import { Firestore } from '@angular/fire/firestore';
 import { User } from 'firebase/auth';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { FirestoreWriteService } from './firestore-write';
 
-const { docMock, getDocMock, setDocMock } = vi.hoisted(() => ({
+const { addDocMock, arrayUnionMock, collectionMock, deleteDocMock, docMock, getDocMock, getDocsMock, getFirestoreMock, setDocMock } = vi.hoisted(() => ({
+  addDocMock: vi.fn().mockResolvedValue({ id: 'new-document' }),
+  arrayUnionMock: vi.fn((...values: unknown[]) => ({ union: values })),
+  collectionMock: vi.fn(() => 'collection-ref'),
+  deleteDocMock: vi.fn().mockResolvedValue(undefined),
   docMock: vi.fn(() => 'user-profile-ref'),
   getDocMock: vi.fn().mockResolvedValue({ exists: () => false }),
+  getDocsMock: vi.fn().mockResolvedValue({ docs: [] }),
+  getFirestoreMock: vi.fn(() => 'firestore-instance'),
   setDocMock: vi.fn().mockResolvedValue(undefined),
 }));
 
-vi.mock('@angular/fire/firestore', () => {
-  return {
-    Firestore: class {},
-    doc: docMock,
-    getDoc: getDocMock,
-    setDoc: setDocMock,
-    addDoc: vi.fn(),
-    arrayUnion: (...v: unknown[]) => ({ union: v }),
-    collection: vi.fn(() => 'col-ref'),
-    deleteDoc: vi.fn(),
-    getDocs: vi.fn(),
-  };
-});
+vi.mock('firebase/firestore', () => ({
+  addDoc: addDocMock,
+  arrayUnion: arrayUnionMock,
+  collection: collectionMock,
+  deleteDoc: deleteDocMock,
+  doc: docMock,
+  getDoc: getDocMock,
+  getDocs: getDocsMock,
+  getFirestore: getFirestoreMock,
+  setDoc: setDocMock,
+}));
 
 describe('FirestoreWriteService', () => {
   let service: FirestoreWriteService;
   const auth = { currentUser: { uid: 'user-123' } };
-  const firestore = {};
+  const firestore = 'firestore-instance';
   const user = { uid: 'user-123', email: 'person@example.com' } as User;
 
   beforeEach(() => {
     vi.clearAllMocks();
     TestBed.configureTestingModule({
-      providers: [
-        { provide: Auth, useValue: auth },
-        { provide: Firestore, useValue: firestore },
-      ],
+      providers: [{ provide: Auth, useValue: auth }],
     });
     service = TestBed.inject(FirestoreWriteService);
   });
@@ -87,6 +87,14 @@ describe('FirestoreWriteService', () => {
       { preferences: { theme: 'dark' } },
       { merge: true },
     );
+  });
+
+  it('loads Firestore only when a profile operation is called', async () => {
+    expect(getFirestoreMock).not.toHaveBeenCalled();
+
+    await service.getUserProfile(user);
+
+    expect(getFirestoreMock).toHaveBeenCalledOnce();
   });
 
   it('rejects username updates for another user', async () => {

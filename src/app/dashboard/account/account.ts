@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth/auth';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 import {
   DefaultLocationPreference,
   FirestoreWriteService,
@@ -17,7 +18,7 @@ const PASSWORD_MIN_LENGTH = 8;
 
 @Component({
   selector: 'app-account',
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, ConfirmDialog],
   templateUrl: './account.html',
   styleUrl: './account.css',
 })
@@ -163,8 +164,14 @@ export class Account {
     }
   }
 
+  readonly isConfirmingLogout = signal(false);
+  readonly isLoggingOut = signal(false);
+
   async logout(): Promise<void> {
+    this.isLoggingOut.set(true);
     const loggedOut = await this.authService.logout();
+    this.isLoggingOut.set(false);
+    this.isConfirmingLogout.set(false);
     if (loggedOut) {
       await this.router.navigateByUrl('/');
     }

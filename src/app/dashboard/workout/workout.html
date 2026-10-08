@@ -2,8 +2,8 @@
 
   <!-- Toast Notification -->
   @if (toastMessage()) {
-    <div class="fixed top-6 right-6 z-50 bg-indigo-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-indigo-700 animate-bounce">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div class="fixed top-6 right-6 z-50 bg-feature text-on-feature px-5 py-3.5 rounded-lg shadow-2xl flex items-center gap-3 border border-line animate-bounce">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-on-feature shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
       </svg>
       <span class="font-bold text-sm">{{ toastMessage() }}</span>
@@ -18,12 +18,12 @@
     </div>
 
     @if (routineService.routines().length > 0) {
-      <div class="bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-3 flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg">
+      <div class="bg-canvas border border-line rounded-lg px-5 py-3 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-brand-focus text-on-brand-primary flex items-center justify-center font-bold text-lg">
           {{ routineService.routines().length }}
         </div>
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 block">Weekly Routine</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-brand-focus block">Weekly Routine</span>
           <span class="text-sm font-semibold text-gray-700">Total workouts scheduled</span>
         </div>
       </div>
@@ -44,7 +44,7 @@
       </div>
       <input 
         type="text" 
-        class="block w-full pl-12 pr-4 py-4 rounded-2xl border-gray-200 bg-surface shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow text-lg outline-none" 
+        class="block w-full pl-12 pr-4 py-4 rounded-lg border-gray-200 bg-surface shadow-sm focus:ring-2 focus:ring-brand-focus focus:border-line transition-shadow text-lg outline-none" 
         placeholder="Search for an exercise (e.g. Kettlebell Swing, Bench Press)..."
         (input)="updateSearch($event)"
       >
@@ -54,7 +54,7 @@
     <div class="relative">
       <button 
         (click)="toggleBmiPopover()"
-        class="flex items-center justify-center h-[60px] w-[60px] rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-indigo-600 transition-colors shadow-sm border border-indigo-100 group"
+        class="flex items-center justify-center h-[60px] w-[60px] rounded-lg bg-canvas hover:bg-canvas text-brand-focus transition-colors shadow-sm border border-line group"
         title="BMI Calculator"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,7 +64,7 @@
 
       <!-- BMI Popover -->
       @if (isBmiPopoverOpen()) {
-        <div class="absolute right-0 top-[72px] w-80 bg-surface/95 backdrop-blur-2xl rounded-3xl p-6 shadow-2xl border border-gray-200 animate-fade-in z-50">
+        <div class="absolute right-0 top-[72px] w-80 bg-surface/95 backdrop-blur-2xl rounded-lg p-6 shadow-2xl border border-gray-200 animate-fade-in z-50">
           <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
             BMI Calculator
           </h3>
@@ -73,13 +73,13 @@
           <div class="mb-5">
             <div class="flex justify-between items-end mb-2">
               <label class="text-xs font-bold text-gray-500 uppercase">Height (in)</label>
-              <span class="text-sm font-bold text-indigo-600">{{ heightInches() }} in</span>
+              <span class="text-sm font-bold text-brand-focus">{{ heightInches() }} in</span>
             </div>
             <input 
               type="range" 
               min="48" max="84" 
               [(ngModel)]="heightInches"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-focus"
             >
           </div>
 
@@ -87,22 +87,22 @@
           <div class="mb-6">
             <div class="flex justify-between items-end mb-2">
               <label class="text-xs font-bold text-gray-500 uppercase">Weight (lbs)</label>
-              <span class="text-sm font-bold text-indigo-600">{{ weightLbs() }} lbs</span>
+              <span class="text-sm font-bold text-brand-focus">{{ weightLbs() }} lbs</span>
             </div>
             <input 
               type="range" 
               min="80" max="350" 
               [(ngModel)]="weightLbs"
-              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-focus"
             >
           </div>
 
           <!-- Result Gauge -->
-          <div class="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100">
+          <div class="bg-gray-50 rounded-lg p-4 text-center border border-gray-100">
             <div class="text-4xl font-extrabold" [ngClass]="bmiColor().split(' ')[0]">
               {{ bmi() | number: '1.1-1' }}
             </div>
-            <div class="text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mt-2 inline-block" [ngClass]="bmiColor()">
+            <div class="text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-md mt-2 inline-block" [ngClass]="bmiColor()">
               {{ bmiCategory() }}
             </div>
             
@@ -122,21 +122,21 @@
 
   <!-- Loading State -->
   @if (workoutService.isLoading()) {
-    <div class="flex flex-col items-center justify-center p-20 bg-surface rounded-3xl shadow-sm border border-gray-100">
-      <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mb-4"></div>
+    <div class="flex flex-col items-center justify-center p-20 bg-surface rounded-lg shadow-sm border border-gray-100">
+      <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-line mb-4"></div>
       <p class="text-gray-500 font-medium">Loading exercises...</p>
     </div>
   }
 
   <!-- Error State -->
   @if (routineService.error()) {
-    <div role="alert" class="bg-red-50 text-red-700 px-6 py-4 rounded-2xl border border-red-200 mb-6 shadow-sm">
+    <div role="alert" class="bg-red-50 text-red-700 px-6 py-4 rounded-lg border border-red-200 mb-6 shadow-sm">
       {{ routineService.error() }}
     </div>
   }
 
   @if (workoutService.error()) {
-    <div class="bg-red-50 text-red-700 p-8 rounded-3xl border border-red-200 mb-6 flex items-start shadow-sm">
+    <div class="bg-red-50 text-red-700 p-8 rounded-lg border border-red-200 mb-6 flex items-start shadow-sm">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-4 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>
@@ -155,22 +155,22 @@
         <!-- Custom Workout Card -->
         <div 
           (click)="openCustomModal()"
-          class="bg-indigo-50 border border-indigo-200 border-dashed rounded-3xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-center items-center h-full group cursor-pointer text-center min-h-[300px]"
+          class="bg-canvas border border-line border-dashed rounded-lg p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-center items-center h-full group cursor-pointer text-center min-h-[300px]"
         >
-          <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <div class="w-16 h-16 bg-canvas text-brand-focus rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
           </div>
-          <h2 class="text-2xl font-bold text-indigo-900 mb-2">Custom Workout</h2>
-          <p class="text-sm text-indigo-700 max-w-xs">Can't find what you're looking for? Add your own workout.</p>
+          <h2 class="text-2xl font-bold text-brand-focus mb-2">Custom Workout</h2>
+          <p class="text-sm text-brand-focus max-w-xs">Can't find what you're looking for? Add your own workout.</p>
         </div>
 
         @for (workout of customWorkouts(); track workout.id) {
-          <div class="bg-purple-50 rounded-3xl p-6 shadow-md border border-purple-100 hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden relative group">
+          <div class="bg-surface rounded-lg p-6 shadow-md border border-line hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden relative group">
           
             <!-- Category Pill -->
-            <div class="absolute top-6 right-6 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+            <div class="absolute top-6 right-6 bg-canvas text-brand-secondary-dark px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wide">
               CUSTOM
             </div>
 
@@ -181,7 +181,7 @@
             </div>
             
             @if (workout.details) {
-               <p class="text-xs text-purple-600 font-bold mt-2 border-t border-purple-200 pt-2">Details: {{ workout.details }}</p>
+               <p class="text-xs text-brand-secondary-dark font-bold mt-2 border-t border-line pt-2">Details: {{ workout.details }}</p>
             }
 
             <!-- ACTION BUTTONS -->
@@ -189,7 +189,7 @@
               <!-- ADD TO ROUTINE BUTTON -->
               <button 
                 (click)="openAddModal(workout)"
-                class="flex-1 bg-purple-100 hover:bg-purple-600 hover:text-white text-purple-700 font-bold py-3.5 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                class="flex-1 bg-canvas hover:bg-brand-secondary-dark hover:text-on-brand-primary text-brand-secondary-dark font-bold py-3.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
@@ -200,7 +200,7 @@
               <!-- DELETE BUTTON -->
               <button 
                 (click)="deleteCustomWorkout(workout)"
-                class="bg-gray-100 hover:bg-red-500 hover:text-white text-gray-500 p-3.5 rounded-2xl transition-all duration-200 flex items-center justify-center shrink-0 cursor-pointer"
+                class="bg-gray-100 hover:bg-red-500 hover:text-white text-gray-500 p-3.5 rounded-lg transition-all duration-200 flex items-center justify-center shrink-0 cursor-pointer"
                 title="Delete workout"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -212,10 +212,10 @@
         }
 
         @for (exercise of filteredExercises(); track exercise.id) {
-          <div class="bg-surface rounded-3xl p-6 shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden relative group">
+          <div class="bg-surface rounded-lg p-6 shadow-md border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden relative group">
           
             <!-- Category Pill -->
-            <div class="absolute top-6 right-6 bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">
+            <div class="absolute top-6 right-6 bg-canvas text-brand-focus px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wide">
               ID: {{ exercise.id }}
             </div>
 
@@ -228,7 +228,7 @@
             <!-- ADD TO ROUTINE BUTTON (Triggers Modal) -->
             <button 
               (click)="openAddModal(exercise)"
-              class="mt-6 w-full bg-indigo-50 hover:bg-indigo-600 hover:text-white text-indigo-700 font-bold py-3.5 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:shadow-md cursor-pointer"
+              class="mt-6 w-full bg-canvas hover:bg-brand-focus hover:text-on-brand-primary text-brand-focus font-bold py-3.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group-hover:shadow-md cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
@@ -239,7 +239,7 @@
         }
       </div>
     } @else {
-      <div class="text-center p-12 bg-surface rounded-3xl shadow-sm border border-gray-100">
+      <div class="text-center p-12 bg-surface rounded-lg shadow-sm border border-gray-100">
         <p class="text-xl text-gray-500">No exercises found.</p>
       </div>
     }
@@ -249,15 +249,15 @@
 
 <!-- ADD TO ROUTINE MODAL DIALOG -->
 @if (isModalOpen() && selectedExercise()) {
-  <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+  <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
     
     <!-- Modal Card -->
-    <div class="bg-surface rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-gray-100 relative">
+    <div class="bg-surface rounded-lg max-w-md w-full p-6 sm:p-8 shadow-2xl border border-gray-100 relative">
       
       <!-- Close Button -->
       <button 
         (click)="closeModal()" 
-        class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+        class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-md hover:bg-gray-100 transition-colors"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -266,13 +266,13 @@
 
       <!-- Modal Title & Icon -->
       <div class="mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+        <div class="w-12 h-12 rounded-lg bg-canvas text-brand-focus flex items-center justify-center mb-3">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
         <h2 class="text-2xl font-extrabold text-gray-900">Add to Routine</h2>
-        <p class="text-sm text-gray-500 mt-1">Configure time goal and reps for <span class="font-bold text-indigo-600">"{{ selectedExercise()?.name }}"</span>.</p>
+        <p class="text-sm text-gray-500 mt-1">Configure time goal and reps for <span class="font-bold text-brand-focus">"{{ selectedExercise()?.name }}"</span>.</p>
       </div>
 
       <!-- Modal Form -->
@@ -284,7 +284,7 @@
           <select 
             [(ngModel)]="dayInput" 
             name="dayOfWeek"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm outline-none bg-gray-50 focus:bg-surface font-semibold text-gray-800 transition-all"
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-focus focus:border-line text-sm outline-none bg-gray-50 focus:bg-surface font-semibold text-gray-800 transition-all"
           >
             @for (day of daysOfWeek; track day) {
               <option [value]="day">{{ day }}</option>
@@ -303,7 +303,7 @@
               min="1" 
               max="300" 
               step="5"
-              class="w-full px-4 py-3.5 pl-11 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg font-bold text-gray-900 outline-none bg-gray-50 focus:bg-surface transition-all"
+              class="w-full px-4 py-3.5 pl-11 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-focus focus:border-line text-lg font-bold text-gray-900 outline-none bg-gray-50 focus:bg-surface transition-all"
               required
             >
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-bold">
@@ -323,7 +323,7 @@
               min="1" 
               max="500" 
               step="1"
-              class="w-full px-4 py-3.5 pl-11 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg font-bold text-gray-900 outline-none bg-gray-50 focus:bg-surface transition-all"
+              class="w-full px-4 py-3.5 pl-11 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-focus focus:border-line text-lg font-bold text-gray-900 outline-none bg-gray-50 focus:bg-surface transition-all"
               required
             >
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 font-bold">
@@ -337,14 +337,14 @@
           <button 
             type="button" 
             (click)="closeModal()" 
-            class="px-5 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 font-semibold text-gray-600 text-sm transition-colors"
+            class="px-5 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 font-semibold text-gray-600 text-sm transition-colors"
           >
             Cancel
           </button>
           
           <button 
             type="submit" 
-            class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md hover:shadow-indigo-200 transition-all flex items-center gap-2 cursor-pointer"
+            class="px-6 py-2.5 rounded-lg bg-brand-focus hover:bg-brand-primary-hover text-on-brand-primary font-bold text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer"
           >
             Add to Routine
           </button>
@@ -358,13 +358,13 @@
 
 <!-- CUSTOM WORKOUT MODAL -->
 @if (isCustomModalOpen()) {
-  <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+  <div class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
     
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-gray-100 relative">
+    <div class="bg-white rounded-lg max-w-md w-full p-6 sm:p-8 shadow-2xl border border-gray-100 relative">
       
       <button 
         (click)="closeCustomModal()" 
-        class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100 transition-colors"
+        class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 p-2 rounded-md hover:bg-gray-100 transition-colors"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -372,7 +372,7 @@
       </button>
 
       <div class="mb-6">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-3">
+        <div class="w-12 h-12 rounded-lg bg-canvas text-brand-focus flex items-center justify-center mb-3">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -389,7 +389,7 @@
             type="text" 
             [(ngModel)]="customName" 
             name="customName"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all"
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-focus focus:border-line text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all"
             placeholder="e.g. My Home Routine"
             required
           >
@@ -401,7 +401,7 @@
             [(ngModel)]="customDesc" 
             name="customDesc"
             rows="3"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all custom-scrollbar"
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-focus focus:border-line text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all custom-scrollbar"
             placeholder="Describe the workout..."
           ></textarea>
         </div>
@@ -412,7 +412,7 @@
             type="text" 
             [(ngModel)]="customDetails" 
             name="customDetails"
-            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all"
+            class="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-focus focus:border-line text-sm font-semibold text-gray-900 outline-none bg-gray-50 focus:bg-white transition-all"
             placeholder="e.g. Equipment needed"
           >
         </div>
@@ -421,7 +421,7 @@
           <button 
             type="button" 
             (click)="closeCustomModal()" 
-            class="px-5 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 font-semibold text-gray-600 text-sm transition-colors"
+            class="px-5 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 font-semibold text-gray-600 text-sm transition-colors"
           >
             Cancel
           </button>
@@ -429,7 +429,7 @@
           <button 
             type="submit" 
             [disabled]="!customName"
-            class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 disabled:cursor-not-allowed text-white font-bold text-sm shadow-md transition-all flex items-center gap-2"
+            class="px-6 py-2.5 rounded-lg bg-brand-focus hover:bg-brand-primary-hover disabled:opacity-60 disabled:cursor-not-allowed text-on-brand-primary font-bold text-sm shadow-md transition-all flex items-center gap-2"
           >
             Save Workout
           </button>

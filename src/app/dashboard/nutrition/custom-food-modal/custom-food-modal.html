@@ -1,4 +1,4 @@
-﻿<app-dialog [heading]="isEditing() ? 'Edit custom food' : 'Create custom food'" (closed)="closed.emit()">
+<app-dialog [heading]="isEditing() ? 'Edit custom food' : 'Create custom food'" (closed)="closed.emit()">
   <form [formGroup]="form" (ngSubmit)="submit(false)" novalidate class="flex flex-col gap-4">
     <div>
       <label class="block text-xs font-bold uppercase tracking-wider mb-1" for="cf-name">Name (required)</label>

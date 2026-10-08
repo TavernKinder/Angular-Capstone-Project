@@ -13,8 +13,8 @@ import { guestGuard } from './guest-guard';
 
 const { authStateMock } = vi.hoisted(() => ({ authStateMock: vi.fn() }));
 
-vi.mock('@angular/fire/auth', () => ({
-  Auth: class {},
+vi.mock('@angular/fire/auth', async (importOriginal) => ({
+  Auth: (await importOriginal<typeof import('@angular/fire/auth')>()).Auth,
   authState: authStateMock,
 }));
 

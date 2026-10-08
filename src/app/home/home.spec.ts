@@ -21,6 +21,7 @@ describe('Home', () => {
   });
 
   it('cycles through slides and ignores navigation when there are none', () => {
+    component.slides.length = 0;
     component.showNext();
     expect(component.activeSlideIndex).toBe(0);
 
