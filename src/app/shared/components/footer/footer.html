@@ -1,9 +1,26 @@
 <footer class="site-footer">
   <nav class="footer-nav" aria-label="Footer navigation">
     <span>Fitness Tracker</span>
+    <span
+      >by <a href="https://www.linkedin.com/in/tavern-kinder-1572733a3/">Tavern Kinder</a> and
+      <a href="https://www.linkedin.com/in/xadrian-rodriguez-b521153a5/">Xadrian Rodriguez</a></span
+    >
     <a routerLink="/about">About</a>
     @if (authService.currentUser()) {
-      <button type="button" class="footer-logout" (click)="logout()">Logout</button>
+      <button type="button" class="footer-logout" (click)="isConfirmingLogout.set(true)">
+        Logout
+      </button>
     }
   </nav>
 </footer>
+
+@if (isConfirmingLogout()) {
+  <app-confirm-dialog
+    heading="Log out?"
+    message="Are you sure you want to log out of your account?"
+    confirmLabel="Log out"
+    [isBusy]="isLoggingOut()"
+    (confirmed)="logout()"
+    (cancelled)="isConfirmingLogout.set(false)"
+  />
+}

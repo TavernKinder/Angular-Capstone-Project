@@ -21,6 +21,8 @@
   --hero-from: #e3ece5;
   --hero-via: #f9faf7;
   --hero-to: #f0e6dc;
+  --feature: #183b35;
+  --on-feature: #ffffff;
 
   --danger: #a7322b;
   --danger-strong: #b34337;
@@ -64,6 +66,8 @@ html.theme-dark {
   --hero-from: #16231f;
   --hero-via: #101a17;
   --hero-to: #231a15;
+  --feature: #1f4a40;
+  --on-feature: #e4efe9;
 
   --danger: #f08a82;
   --danger-strong: #e0655a;
@@ -127,4 +131,15 @@ html.theme-dark {
   --color-field: var(--field-bg);
   --color-stat: var(--stat-bg);
   --color-stat-ink: var(--stat-ink);
+  --color-feature: var(--feature);
+  --color-on-feature: var(--on-feature);
+}
+
+/* One 8px radius for every card, input and button (rounded-full stays circular). */
+@theme {
+  --radius-md: 0.5rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.5rem;
+  --radius-3xl: 0.5rem;
 }

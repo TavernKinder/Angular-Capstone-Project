@@ -7,10 +7,11 @@ import { Firestore } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 import { AuthService } from '../../shared/services/auth/auth';
+import { RoutineService } from '../../shared/services/routine/routine';
 import { Workout } from './workout';
 
-vi.mock('@angular/fire/auth', () => ({
-  Auth: class {},
+vi.mock('@angular/fire/auth', async (importOriginal) => ({
+  Auth: (await importOriginal<typeof import('@angular/fire/auth')>()).Auth,
   user: () => of({ uid: 'test-user-123' }),
   authState: () => of({ uid: 'test-user-123' }),
 }));
@@ -32,6 +33,16 @@ describe('Workout', () => {
         {
           provide: AuthService,
           useValue: { currentUser: signal({ uid: 'test-user-123' }) },
+        },
+        {
+          provide: RoutineService,
+          useValue: {
+            routines: signal([]),
+            isLoading: signal(false),
+            error: signal(null),
+            addRoutine: vi.fn(),
+            deleteRoutine: vi.fn(),
+          },
         },
         {
           provide: Firestore,

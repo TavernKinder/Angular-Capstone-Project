@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, HostListener, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoutineService, SavedRoutineItem } from '../../services/routine/routine';
 
@@ -20,6 +20,22 @@ export class WeeklySchedule {
     'Saturday',
     'Sunday',
   ];
+
+  public readonly isOpen = signal(false);
+
+  public todayCount = computed(() => {
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+    return this.routineService.routines().filter((r) => (r.dayOfWeek || 'Monday') === today).length;
+  });
+
+  open() {
+    this.isOpen.set(true);
+  }
+
+  @HostListener('document:keydown.escape')
+  close() {
+    this.isOpen.set(false);
+  }
 
   public routinesByDay = computed(() => {
     const list = this.routineService.routines();

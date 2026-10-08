@@ -1,0 +1,38 @@
+.about-page {
+  display: grid;
+  place-items: center;
+  width: min(100% - 2.5rem, 68rem);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+.about-card {
+  width: min(100%, 44rem);
+  padding: clamp(1.75rem, 5vw, 2.75rem);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  box-shadow: 0 0.75rem 2rem rgb(24 59 53 / 5%);
+}
+
+.about-eyebrow {
+  margin: 0 0 0.6rem;
+  color: var(--brand-secondary-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.about-card h1 {
+  margin: 0 0 1rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  font-weight: 500;
+}
+
+.about-card p:last-child {
+  margin: 0;
+  color: var(--brand-muted);
+  line-height: 1.7;
+}
