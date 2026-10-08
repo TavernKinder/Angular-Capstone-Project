@@ -1,0 +1,16 @@
+﻿.carousel-nav {
+  display: grid;
+  width: 2.5rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--brand-primary);
+  cursor: pointer;
+}
+
+.carousel-nav:disabled {
+  color: var(--subtle);
+  cursor: not-allowed;
+}

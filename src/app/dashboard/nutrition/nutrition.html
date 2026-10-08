@@ -7,6 +7,8 @@
     </p>
   </div>
 
+  <app-food-carousel class="block max-w-2xl mx-auto mb-10" />
+
   <!-- Search Bar Container -->
   <div class="max-w-2xl mx-auto mb-12">
     <!-- Removed generic Tailwind outlines, using focus-within to trigger the custom outline defined in styles.css for inputs -->
@@ -30,6 +32,76 @@
       }
     </div>
   </div>
+
+  <!-- My Foods -->
+  <section class="max-w-2xl mx-auto mb-10" aria-labelledby="my-foods-title">
+    <div class="flex items-center justify-between mb-4">
+      <h2 id="my-foods-title" class="text-lg font-bold text-brand-primary">My foods</h2>
+      <button
+        type="button"
+        class="px-4 py-2 rounded-sm border border-line text-sm font-semibold text-brand-primary hover:bg-surface"
+        (click)="customModal.set('new')"
+      >
+        + Create custom food
+      </button>
+    </div>
+
+    @if (customFoods().length === 0) {
+      <p class="text-sm text-brand-muted">Can't find a food? Create your own and log it like any other.</p>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        @for (food of visibleCustomFoods(); track food.id) {
+          <div class="relative bg-surface p-4 border border-line rounded-sm flex flex-col gap-3">
+            <div>
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-bold text-brand-primary leading-snug">{{ food.name }}</h3>
+                <span class="shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border border-line text-brand-muted">Custom</span>
+              </div>
+              @if (food.brand) {
+                <p class="text-xs text-brand-muted uppercase tracking-wide">{{ food.brand }}</p>
+              }
+              <p class="text-xs text-brand-muted mt-2">
+                {{ food.calories ?? '-' }} kcal &middot; P {{ food.protein ?? '-' }}g &middot; C {{ food.carbs ?? '-' }}g &middot; F {{ food.fat ?? '-' }}g
+                <span class="block text-[10px] uppercase tracking-widest mt-0.5">per 100g</span>
+              </p>
+            </div>
+            <div class="flex items-center gap-2 mt-auto">
+              <button
+                type="button"
+                class="flex-1 px-3 py-1.5 rounded-sm bg-brand-primary text-on-brand-primary text-sm font-semibold hover:bg-brand-primary-hover"
+                (click)="onCustomFoodClick(food)"
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                class="px-3 py-1.5 rounded-sm border border-line text-sm hover:bg-canvas"
+                [attr.aria-label]="'Edit ' + food.name"
+                (click)="customModal.set(food)"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="px-3 py-1.5 rounded-sm border border-line text-sm text-danger-text hover:bg-canvas"
+                [attr.aria-label]="'Delete ' + food.name"
+                (click)="deletingCustomFood.set(food)"
+              >
+                Delete
+              </button>
+            </div>
+            @if (recentlyLogged() === food.id) {
+              <div class="absolute inset-0 bg-surface/95 z-10 flex items-center justify-center text-brand-focus font-bold text-sm uppercase tracking-widest border border-brand-focus rounded-sm">
+                Logged
+              </div>
+            }
+          </div>
+        } @empty {
+          <p class="text-sm text-brand-muted">No custom foods match your search.</p>
+        }
+      </div>
+    }
+  </section>
 
   <!-- Content Area -->
   <div>
@@ -117,6 +189,29 @@
     }
   </div>
 </div>
+
+@if (addingFood(); as food) {
+  <app-add-food-modal [food]="food" (closed)="addingFood.set(null)" (logged)="onFoodLogged()" />
+}
+
+@if (customModal() !== null) {
+  <app-custom-food-modal
+    [food]="editingCustomFood()"
+    [isSaving]="isSavingCustomFood()"
+    (closed)="customModal.set(null)"
+    (saved)="saveCustomFood($event)"
+  />
+}
+
+@if (deletingCustomFood(); as food) {
+  <app-confirm-dialog
+    heading="Delete custom food?"
+    [message]="'Delete ' + food.name + ' from your foods? Entries you already logged are not changed.'"
+    [isBusy]="isSavingCustomFood()"
+    (confirmed)="deleteCustomFood()"
+    (cancelled)="deletingCustomFood.set(null)"
+  />
+}
 
 <style>
   .animate-fade-in {

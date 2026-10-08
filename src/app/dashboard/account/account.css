@@ -172,6 +172,54 @@
   font-size: 0.9rem;
 }
 
+.location-preference {
+  justify-content: flex-start;
+}
+
+.location-form {
+  max-width: none;
+}
+
+.location-search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.location-search .account-button {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.location-results {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.location-results li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.3rem;
+  color: var(--brand-primary);
+}
+
+.location-results li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.location-results .account-button {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
 .account-error,
 .account-message {
   margin: 0 auto 1rem;
@@ -203,7 +251,8 @@
 }
 
 @media (max-width: 420px) {
-  .preference-row {
+  .preference-row,
+  .location-results li {
     align-items: flex-start;
     flex-direction: column;
   }

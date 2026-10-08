@@ -4,6 +4,7 @@ import { provideRouter, Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth/auth';
 import { FirestoreWriteService } from '../../shared/services/firestore/firestore-write';
 import { ThemeService } from '../../shared/services/theme/theme';
+import { Weather } from '../../shared/services/weather/weather';
 
 import { Account } from './account';
 
@@ -25,6 +26,11 @@ describe('Account', () => {
     getUserProfile: ReturnType<typeof vi.fn>;
     updateUserName: ReturnType<typeof vi.fn>;
     updateTheme: ReturnType<typeof vi.fn>;
+    updateDefaultLocation: ReturnType<typeof vi.fn>;
+  };
+  let weatherService: {
+    searchLocations: ReturnType<typeof vi.fn>;
+    loadWeatherForLocation: ReturnType<typeof vi.fn>;
   };
   let themeService: {
     theme: ReturnType<typeof signal<'light' | 'dark'>>;
@@ -43,6 +49,11 @@ describe('Account', () => {
       getUserProfile: vi.fn().mockResolvedValue({ userName: 'Tav', preferences: {} }),
       updateUserName: vi.fn().mockResolvedValue(undefined),
       updateTheme: vi.fn().mockResolvedValue(undefined),
+      updateDefaultLocation: vi.fn().mockResolvedValue(undefined),
+    };
+    weatherService = {
+      searchLocations: vi.fn().mockResolvedValue([]),
+      loadWeatherForLocation: vi.fn().mockResolvedValue(undefined),
     };
     themeService = {
       theme: signal<'light' | 'dark'>('light'),
@@ -57,6 +68,7 @@ describe('Account', () => {
         { provide: AuthService, useValue: authService },
         { provide: FirestoreWriteService, useValue: firestoreWriteService },
         { provide: ThemeService, useValue: themeService },
+        { provide: Weather, useValue: weatherService },
       ],
     }).compileComponents();
 
@@ -145,9 +157,56 @@ describe('Account', () => {
     expect(component.accountError()).toContain('theme preference');
   });
 
-  it('leaves the unimplemented preference handlers as no-ops', () => {
-    expect(() => component.changeReminders()).not.toThrow();
-    expect(() => component.changeDefaultLocation()).not.toThrow();
+  it('searches for locations using the trimmed search text', async () => {
+    component.locationSearchControl.setValue('  Austin  ');
+    weatherService.searchLocations.mockResolvedValue([
+      {
+        name: 'Austin',
+        admin1: 'Texas',
+        country: 'United States',
+        latitude: 30.2672,
+        longitude: -97.7431,
+      },
+    ]);
+
+    await component.searchLocations();
+
+    expect(weatherService.searchLocations).toHaveBeenCalledWith('Austin');
+    expect(component.locationResults()).toHaveLength(1);
+  });
+
+  it('rejects location searches shorter than two characters', async () => {
+    component.locationSearchControl.setValue('A');
+
+    await component.searchLocations();
+
+    expect(weatherService.searchLocations).not.toHaveBeenCalled();
+    expect(component.accountError()).toContain('two characters');
+  });
+
+  it('saves the selected location to the user preferences and loads its forecast', async () => {
+    const location = {
+      name: 'Austin',
+      admin1: 'Texas',
+      country: 'United States',
+      latitude: 30.2672,
+      longitude: -97.7431,
+    };
+
+    await component.saveDefaultLocation(location);
+
+    const savedLocation = {
+      name: 'Austin, Texas, United States',
+      coordinates: { latitude: 30.2672, longitude: -97.7431 },
+    };
+    expect(firestoreWriteService.updateDefaultLocation).toHaveBeenCalledWith(user, savedLocation);
+    expect(component.profile()?.preferences?.defaultLocation).toEqual(savedLocation);
+    expect(weatherService.loadWeatherForLocation).toHaveBeenCalledWith(
+      30.2672,
+      -97.7431,
+      savedLocation.name,
+    );
+    expect(component.accountMessage()).toBe('Weather location saved.');
   });
 
   function hasChangePasswordButton(fixture: ComponentFixture<Account>): boolean {

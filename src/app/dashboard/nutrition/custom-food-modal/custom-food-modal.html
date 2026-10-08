@@ -1,0 +1,68 @@
+﻿<app-dialog [heading]="isEditing() ? 'Edit custom food' : 'Create custom food'" (closed)="closed.emit()">
+  <form [formGroup]="form" (ngSubmit)="submit(false)" novalidate class="flex flex-col gap-4">
+    <div>
+      <label class="block text-xs font-bold uppercase tracking-wider mb-1" for="cf-name">Name (required)</label>
+      <input
+        id="cf-name"
+        type="text"
+        formControlName="name"
+        class="w-full px-3 py-2 rounded-sm border border-line bg-field"
+        [attr.aria-invalid]="showError('name')"
+      />
+      @if (showError('name')) {
+        <p class="text-xs text-danger-text mt-1" role="alert">Enter a name for the food.</p>
+      }
+    </div>
+
+    <div>
+      <label class="block text-xs font-bold uppercase tracking-wider mb-1" for="cf-brand">Brand (optional)</label>
+      <input id="cf-brand" type="text" formControlName="brand" class="w-full px-3 py-2 rounded-sm border border-line bg-field" />
+    </div>
+
+    <fieldset class="grid grid-cols-2 gap-3">
+      <legend class="text-[10px] font-bold uppercase tracking-widest text-brand-muted mb-2">
+        Per 100g (all optional)
+      </legend>
+      @for (key of macroFields; track key) {
+        <div>
+          <label class="block text-xs font-semibold capitalize mb-1" [for]="'cf-' + key">
+            {{ key }}{{ key === 'calories' ? ' (kcal)' : ' (g)' }}
+          </label>
+          <input
+            [id]="'cf-' + key"
+            type="number"
+            min="0"
+            step="any"
+            inputmode="decimal"
+            [formControlName]="key"
+            class="w-full px-3 py-2 rounded-sm border border-line bg-field"
+            [attr.aria-invalid]="showError(key)"
+          />
+          @if (showError(key)) {
+            <p class="text-xs text-danger-text mt-1" role="alert">Must be 0 or more.</p>
+          }
+        </div>
+      }
+    </fieldset>
+
+    <div class="flex flex-wrap justify-end gap-3 pt-2">
+      <button
+        type="submit"
+        class="px-4 py-2 rounded-sm border border-line font-semibold hover:bg-canvas disabled:opacity-60"
+        [disabled]="isSaving()"
+      >
+        {{ isEditing() ? 'Save changes' : 'Create' }}
+      </button>
+      @if (!isEditing()) {
+        <button
+          type="button"
+          class="px-4 py-2 rounded-sm bg-brand-primary text-on-brand-primary font-semibold hover:bg-brand-primary-hover disabled:opacity-60"
+          [disabled]="isSaving()"
+          (click)="submit(true)"
+        >
+          Create &amp; log
+        </button>
+      }
+    </div>
+  </form>
+</app-dialog>

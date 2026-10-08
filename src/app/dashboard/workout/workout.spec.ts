@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -5,11 +6,13 @@ import { Auth } from '@angular/fire/auth';
 import { Firestore } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
+import { AuthService } from '../../shared/services/auth/auth';
 import { Workout } from './workout';
 
 vi.mock('@angular/fire/auth', () => ({
   Auth: class {},
   user: () => of({ uid: 'test-user-123' }),
+  authState: () => of({ uid: 'test-user-123' }),
 }));
 
 describe('Workout', () => {
@@ -25,6 +28,10 @@ describe('Workout', () => {
         {
           provide: Auth,
           useValue: { currentUser: { uid: 'test-user-123' } },
+        },
+        {
+          provide: AuthService,
+          useValue: { currentUser: signal({ uid: 'test-user-123' }) },
         },
         {
           provide: Firestore,
