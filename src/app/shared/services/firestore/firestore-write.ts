@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, User } from '@angular/fire/auth';
-import { doc, Firestore, getDoc, setDoc, collection, addDoc, getDocs } from '@angular/fire/firestore';
+import { doc, Firestore, getDoc, setDoc, collection, addDoc, getDocs, deleteDoc } from '@angular/fire/firestore';
 
 export type ThemePreference = 'light' | 'dark';
 
@@ -72,6 +72,12 @@ export class FirestoreWriteService {
     const customWorkoutsRef = collection(this.firestore, 'userInfo', user.uid, 'customWorkouts');
     const snapshot = await getDocs(customWorkoutsRef);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
+  async deleteCustomWorkout(user: User, workoutId: string): Promise<void> {
+    this.assertSignedIn(user);
+    const docRef = doc(this.firestore, 'userInfo', user.uid, 'customWorkouts', workoutId);
+    await deleteDoc(docRef);
   }
 
   private assertSignedIn(user: User): void {

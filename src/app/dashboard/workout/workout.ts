@@ -5,11 +5,12 @@ import { Workout as WorkoutService, Exercise } from '../../shared/services/worko
 import { RoutineService, SavedRoutineItem } from '../../shared/services/routine/routine';
 import { AuthService } from '../../shared/services/auth/auth';
 import { FirestoreWriteService } from '../../shared/services/firestore/firestore-write';
+import { WeeklySchedule } from '../../shared/components/weekly-schedule/weekly-schedule';
 
 @Component({
   selector: 'app-workout',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, WeeklySchedule],
   templateUrl: './workout.html',
   styleUrl: './workout.css',
 })
@@ -34,6 +35,49 @@ export class Workout implements OnInit {
   public customDesc = '';
   public customDetails = '';
   public customWorkouts = signal<any[]>([]);
+
+  // BMI Calculator State
+  public isBmiPopoverOpen = signal<boolean>(false);
+  public heightInches = signal<number>(68); // Default 5'8"
+  public weightLbs = signal<number>(150);
+
+  public bmi = computed(() => {
+    const h = this.heightInches();
+    const w = this.weightLbs();
+    if (h === 0) return 0;
+    return (w / (h * h)) * 703;
+  });
+
+  public bmiCategory = computed(() => {
+    const b = this.bmi();
+    if (b < 18.5) return 'Underweight';
+    if (b < 25) return 'Normal';
+    if (b < 30) return 'Overweight';
+    return 'Obese';
+  });
+
+  public bmiColor = computed(() => {
+    const b = this.bmi();
+    if (b < 18.5) return 'text-blue-500 bg-blue-100';
+    if (b < 25) return 'text-emerald-500 bg-emerald-100';
+    if (b < 30) return 'text-amber-500 bg-amber-100';
+    return 'text-red-500 bg-red-100';
+  });
+
+  public bmiPercentage = computed(() => {
+    // Map BMI from 15 to 40 into 0% to 100% for the gauge needle
+    const b = this.bmi();
+    const min = 15;
+    const max = 40;
+    let pct = ((b - min) / (max - min)) * 100;
+    if (pct < 0) pct = 0;
+    if (pct > 100) pct = 100;
+    return pct;
+  });
+
+  toggleBmiPopover() {
+    this.isBmiPopoverOpen.update(v => !v);
+  }
 
   constructor() {
     effect(() => {
@@ -66,15 +110,6 @@ export class Workout implements OnInit {
     const exercises = this.workoutService.exercises();
     if (!query) return exercises.slice(0, 5);
     return exercises.filter((ex) => ex.name.toLowerCase().includes(query)).slice(0, 5);
-  });
-
-  // Group saved routines by day of the week (Monday - Sunday)
-  public routinesByDay = computed(() => {
-    const list = this.routineService.routines();
-    return this.daysOfWeek.map((day) => ({
-      day,
-      routines: list.filter((item) => (item.dayOfWeek || 'Monday') === day),
-    }));
   });
 
   ngOnInit(): void {
@@ -123,12 +158,6 @@ export class Workout implements OnInit {
     }, 4000);
   }
 
-  deleteRoutine(item: SavedRoutineItem) {
-    if (item.id) {
-      this.routineService.deleteRoutine(item.id);
-    }
-  }
-
   openCustomModal() {
     this.customName = '';
     this.customDesc = '';
@@ -165,6 +194,24 @@ export class Workout implements OnInit {
       setTimeout(() => this.toastMessage.set(null), 4000);
     } catch (err) {
       this.toastMessage.set('Failed to save custom workout.');
+      setTimeout(() => this.toastMessage.set(null), 4000);
+    }
+  }
+
+  async deleteCustomWorkout(workout: any) {
+    const confirmDelete = window.confirm(`Are you sure you wish to delete ${workout.name}?`);
+    if (!confirmDelete) return;
+
+    const user = this.authService.currentUser();
+    if (!user) return;
+
+    try {
+      await this.firestoreWriteService.deleteCustomWorkout(user, workout.id);
+      this.customWorkouts.update(workouts => workouts.filter(w => w.id !== workout.id));
+      this.toastMessage.set(`Deleted "${workout.name}".`);
+      setTimeout(() => this.toastMessage.set(null), 4000);
+    } catch (err) {
+      this.toastMessage.set('Failed to delete custom workout.');
       setTimeout(() => this.toastMessage.set(null), 4000);
     }
   }

@@ -97,82 +97,76 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- 7-Day Forecast -->
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">7-Day Forecast</h2>
-    <div class="bg-surface rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="divide-y divide-gray-100">
-        @for (time of data.daily.time; track time; let i = $index) {
-          <div class="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
-            <div class="w-1/4 font-medium text-gray-700">
-              {{ time | date: 'EEEE' }}
-            </div>
+      <!-- Toggle Button -->
+      <button 
+        (click)="toggleForecast()" 
+        class="relative z-10 mt-6 w-full py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-colors border border-white/20"
+      >
+        <span>{{ isForecastExpanded() ? 'Hide 7-Day Forecast' : 'View 7-Day Forecast' }}</span>
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          class="h-4 w-4 transition-transform duration-300" 
+          [class.rotate-180]="isForecastExpanded()"
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
 
-            <!-- Weather icon placeholder based on precipitation -->
-            <div class="w-1/4 flex justify-center text-blue-500">
-              @if (data.daily.precipitation_probability_max[i] > 50) {
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-8 w-8 text-blue-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              } @else {
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-8 w-8 text-yellow-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.5"
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              }
-            </div>
+      <!-- 7-Day Forecast Dropdown -->
+      @if (isForecastExpanded()) {
+        <div class="relative z-10 mt-6 border-t border-white/20 pt-6 animate-fade-in">
+          <div class="space-y-2">
+            @for (time of data.daily.time; track time; let i = $index) {
+              <div class="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                <div class="w-1/4 font-medium">
+                  {{ time | date: 'EEEE' }}
+                </div>
 
-            <div class="w-1/4 text-center text-sm">
-              <span class="text-blue-500 font-medium flex items-center justify-center gap-1">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M2.93 17.07A10 10 0 1117.07 2.93 10 10 0 012.93 17.07zm12.73-1.41A8 8 0 104.34 4.34a8 8 0 0011.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-                {{ data.daily.precipitation_probability_max[i] }}%
-              </span>
-            </div>
+                <div class="w-1/4 flex justify-center text-white">
+                  @if (data.daily.precipitation_probability_max[i] > 50) {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  }
+                </div>
 
-            <div class="w-1/4 text-right flex justify-end gap-3 font-medium">
-              <span class="text-gray-900"
-                >{{ data.daily.temperature_2m_max[i] | number: '1.0-0' }}&deg;</span
-              >
-              <span class="text-gray-400"
-                >{{ data.daily.temperature_2m_min[i] | number: '1.0-0' }}&deg;</span
-              >
-            </div>
+                <div class="w-1/4 text-center text-sm">
+                  <span class="text-blue-100 font-medium flex items-center justify-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M2.93 17.07A10 10 0 1117.07 2.93 10 10 0 012.93 17.07zm12.73-1.41A8 8 0 104.34 4.34a8 8 0 0011.32 11.32zM6.7 9.29L9 11.6l4.3-4.3 1.4 1.42L9 14.4l-3.7-3.7 1.4-1.42z" clip-rule="evenodd" />
+                    </svg>
+                    {{ data.daily.precipitation_probability_max[i] }}%
+                  </span>
+                </div>
+
+                <div class="w-1/4 text-right flex justify-end gap-3 font-medium">
+                  <span class="text-white">{{ data.daily.temperature_2m_max[i] | number: '1.0-0' }}&deg;</span>
+                  <span class="text-white/60">{{ data.daily.temperature_2m_min[i] | number: '1.0-0' }}&deg;</span>
+                </div>
+              </div>
+            }
           </div>
-        }
-      </div>
+        </div>
+      }
     </div>
+
   }
 </div>
+
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>

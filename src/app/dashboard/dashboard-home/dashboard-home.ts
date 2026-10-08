@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Forcast } from '../forcast/forcast';
 import { RoutineService } from '../../shared/services/routine/routine';
+import { WeeklySchedule } from '../../shared/components/weekly-schedule/weekly-schedule';
 
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, Forcast],
+  imports: [CommonModule, RouterLink, Forcast, WeeklySchedule],
   templateUrl: './dashboard-home.html',
   styleUrl: './dashboard-home.css',
 })

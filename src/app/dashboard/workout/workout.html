@@ -31,90 +31,93 @@
   </div>
 
   <!-- 7-DAY WEEKLY SCHEDULE COLUMNS (Monday - Sunday) -->
-  <div class="bg-slate-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden space-y-6">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-4">
-      <div class="flex items-center gap-2.5">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  <app-weekly-schedule></app-weekly-schedule>
+
+  <!-- Search Bar & BMI Row -->
+  <div class="flex items-center gap-4 w-full relative z-20 mt-8">
+    <!-- Search Bar -->
+    <div class="relative flex-1">
+      <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
-        <h2 class="text-2xl font-extrabold tracking-tight">Weekly Schedule</h2>
       </div>
-      <span class="text-xs font-medium text-indigo-200">
-        Workouts grouped by day of the week (Monday – Sunday)
-      </span>
+      <input 
+        type="text" 
+        class="block w-full pl-12 pr-4 py-4 rounded-2xl border-gray-200 bg-surface shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow text-lg outline-none" 
+        placeholder="Search for an exercise (e.g. Kettlebell Swing, Bench Press)..."
+        (input)="updateSearch($event)"
+      >
     </div>
 
-    <!-- 7 Columns Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7 gap-4">
-      @for (dayGroup of routinesByDay(); track dayGroup.day) {
-        <div class="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col min-h-[220px] overflow-hidden">
+    <!-- BMI Calculator Button -->
+    <div class="relative">
+      <button 
+        (click)="toggleBmiPopover()"
+        class="flex items-center justify-center h-[60px] w-[60px] rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-indigo-600 transition-colors shadow-sm border border-indigo-100 group"
+        title="BMI Calculator"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+        </svg>
+      </button>
+
+      <!-- BMI Popover -->
+      @if (isBmiPopoverOpen()) {
+        <div class="absolute right-0 top-[72px] w-80 bg-surface/95 backdrop-blur-2xl rounded-3xl p-6 shadow-2xl border border-gray-200 animate-fade-in z-50">
+          <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            BMI Calculator
+          </h3>
           
-          <!-- Column Day Header -->
-          <div class="px-4 py-3 bg-white/10 border-b border-white/10 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>
-              <h3 class="font-extrabold text-sm tracking-wide text-white">{{ dayGroup.day }}</h3>
+          <!-- Height Slider -->
+          <div class="mb-5">
+            <div class="flex justify-between items-end mb-2">
+              <label class="text-xs font-bold text-gray-500 uppercase">Height (in)</label>
+              <span class="text-sm font-bold text-indigo-600">{{ heightInches() }} in</span>
             </div>
-            <span class="px-2 py-0.5 rounded-md bg-indigo-500/30 text-indigo-200 text-xs font-bold">
-              {{ dayGroup.routines.length }}
-            </span>
+            <input 
+              type="range" 
+              min="48" max="84" 
+              [(ngModel)]="heightInches"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+            >
           </div>
 
-          <!-- Workouts in this Day Column -->
-          <div class="p-3 flex-1 space-y-2.5">
-            @if (dayGroup.routines.length > 0) {
-              @for (item of dayGroup.routines; track item.id) {
-                <div class="bg-white/10 hover:bg-white/15 rounded-xl p-3 border border-white/10 transition-all flex flex-col justify-between group">
-                  <div class="flex items-start justify-between gap-2">
-                    <h4 class="font-bold text-sm text-white leading-snug">{{ item.exerciseName }}</h4>
-                    <button 
-                      (click)="deleteRoutine(item)" 
-                      class="text-gray-400 hover:text-red-400 p-1 transition-colors shrink-0"
-                      title="Delete workout"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <!-- Minutes & Reps Badges -->
-                  <div class="flex flex-wrap items-center gap-1.5 mt-2 pt-2 border-t border-white/10 text-[11px] font-bold">
-                    <span class="bg-indigo-600/60 text-indigo-100 px-2 py-0.5 rounded-md">
-                      ⏱️ {{ item.minutes }}m
-                    </span>
-                    <span class="bg-purple-600/60 text-purple-100 px-2 py-0.5 rounded-md">
-                      🔄 {{ item.reps }} reps
-                    </span>
-                  </div>
-                </div>
-              }
-            } @else {
-              <!-- Empty Column Placeholder -->
-              <div class="h-full flex items-center justify-center text-center p-4 border border-dashed border-white/10 rounded-xl">
-                <span class="text-xs text-gray-400">No workouts</span>
-              </div>
-            }
+          <!-- Weight Slider -->
+          <div class="mb-6">
+            <div class="flex justify-between items-end mb-2">
+              <label class="text-xs font-bold text-gray-500 uppercase">Weight (lbs)</label>
+              <span class="text-sm font-bold text-indigo-600">{{ weightLbs() }} lbs</span>
+            </div>
+            <input 
+              type="range" 
+              min="80" max="350" 
+              [(ngModel)]="weightLbs"
+              class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+            >
           </div>
 
+          <!-- Result Gauge -->
+          <div class="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100">
+            <div class="text-4xl font-extrabold" [ngClass]="bmiColor().split(' ')[0]">
+              {{ bmi() | number: '1.1-1' }}
+            </div>
+            <div class="text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full mt-2 inline-block" [ngClass]="bmiColor()">
+              {{ bmiCategory() }}
+            </div>
+            
+            <!-- Visual Bar -->
+            <div class="w-full h-2 rounded-full mt-5 bg-gradient-to-r from-blue-400 via-emerald-400 to-red-400 relative">
+              <!-- Needle -->
+              <div 
+                class="absolute top-1/2 w-4 h-4 bg-white border-2 border-gray-800 rounded-full shadow-md transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300"
+                [style.left.%]="bmiPercentage()"
+              ></div>
+            </div>
+          </div>
         </div>
       }
     </div>
-  </div>
-
-  <!-- Search Bar -->
-  <div class="relative max-w-2xl">
-    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-    </div>
-    <input 
-      type="text" 
-      class="block w-full pl-12 pr-4 py-4 rounded-2xl border-gray-200 bg-surface shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow text-lg outline-none" 
-      placeholder="Search for an exercise (e.g. Kettlebell Swing, Bench Press)..."
-      (input)="updateSearch($event)"
-    >
   </div>
 
   <!-- Loading State -->
@@ -181,16 +184,30 @@
                <p class="text-xs text-purple-600 font-bold mt-2 border-t border-purple-200 pt-2">Details: {{ workout.details }}</p>
             }
 
-            <!-- ADD TO ROUTINE BUTTON (Triggers Modal) -->
-            <button 
-              (click)="openAddModal(workout)"
-              class="mt-6 w-full bg-purple-100 hover:bg-purple-600 hover:text-white text-purple-700 font-bold py-3.5 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 group-hover:shadow-md cursor-pointer"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-              </svg>
-              Add to Routine
-            </button>
+            <!-- ACTION BUTTONS -->
+            <div class="mt-6 flex items-center gap-3">
+              <!-- ADD TO ROUTINE BUTTON -->
+              <button 
+                (click)="openAddModal(workout)"
+                class="flex-1 bg-purple-100 hover:bg-purple-600 hover:text-white text-purple-700 font-bold py-3.5 px-4 rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                Add to Routine
+              </button>
+              
+              <!-- DELETE BUTTON -->
+              <button 
+                (click)="deleteCustomWorkout(workout)"
+                class="bg-gray-100 hover:bg-red-500 hover:text-white text-gray-500 p-3.5 rounded-2xl transition-all duration-200 flex items-center justify-center shrink-0 cursor-pointer"
+                title="Delete workout"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
           </div>
         }
 
